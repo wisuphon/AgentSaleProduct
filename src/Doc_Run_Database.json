@@ -1,0 +1,4770 @@
+{
+  "name": "Doc_Run_Database",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3220,
+        2220
+      ],
+      "id": "3b1a690d-2de0-43e0-89b6-610a5d7e96ae",
+      "name": "When clicking ‘Test workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        520,
+        180
+      ],
+      "id": "af7ae657-efb5-492b-be75-452b34e0618e",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        920,
+        280
+      ],
+      "id": "10e1b3a6-ee6f-45bd-81ce-a748dcb13877",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        1100,
+        280
+      ],
+      "id": "12cc2e5b-7dfd-4ed9-b344-c634d5bf6ec8",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9710f24a-b9af-4551-8147-e1571f2572c4",
+              "name": "Q",
+              "value": "={{ $json.Q }}",
+              "type": "string"
+            },
+            {
+              "id": "6ce3ee12-f8bf-4c62-82c8-5e5b9090f2b4",
+              "name": "A",
+              "value": "={{ $json.A }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        740,
+        280
+      ],
+      "id": "d060db92-640f-43ee-9f3a-02d42d64666c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "prima_FAQ",
+          "mode": "id"
+        },
+        "embeddingBatchSize": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.1,
+      "position": [
+        1300,
+        280
+      ],
+      "id": "a529f99e-ed6b-4e53-aec2-945456ea57e4",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "sHXJobx5femWVLQF",
+          "name": "Prima-Qdrant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1260,
+        500
+      ],
+      "id": "ef050bd3-6985-4bfb-87c9-cc4d191e1914",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        500
+      ],
+      "id": "4e5bf902-078f-4079-94eb-41acf2ecaa77",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkSize": 400
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        720
+      ],
+      "id": "e8664f4c-52f2-43b4-935e-9f5f96790467",
+      "name": "Token Splitter"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1XEprDJMMaTEp9mLaPOL7wrx_83sxiBx6DV6QppGPvZs",
+          "mode": "list",
+          "cachedResultName": "Q&A",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XEprDJMMaTEp9mLaPOL7wrx_83sxiBx6DV6QppGPvZs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1640666976,
+          "mode": "list",
+          "cachedResultName": "ชีต1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XEprDJMMaTEp9mLaPOL7wrx_83sxiBx6DV6QppGPvZs/edit#gid=1640666976"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        300,
+        180
+      ],
+      "id": "e170566c-ce90-4e9f-b0a7-c661619d6a2c",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-exp",
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "id": "b46010f0-e081-4a88-9362-e5dd2e5b7f5c",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        940,
+        1160
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Jh2jTlBnS9WS3krK",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.content }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "overarching_theme",
+              "description": "Summarize the main theme(s) discussed in the \"Overarching Theme\" section."
+            },
+            {
+              "name": "recurring_topics",
+              "description": "List the recurring topics mentioned in the \"Common Threads\" section as an array of strings."
+            },
+            {
+              "name": "pain_points",
+              "description": "Summarize the user's frustrations or challenges mentioned in the \"Pain Points\" section as an array of strings."
+            },
+            {
+              "name": "analytical_insights",
+              "description": "Extract a list of key analytical observations from the \"Analytical Insights\" section, including shifts in tone or behavior."
+            },
+            {
+              "name": "conclusion",
+              "description": "Summarize the conclusions drawn about the user’s threads and their overall focus."
+            },
+            {
+              "name": "keywords",
+              "description": "Generate a list of 10 keywords that capture the essence of the document (e.g., \"askNostr,\" \"decentralization,\" \"spam filtering\")."
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "=คุณคืออัลกอริทึมสำหรับการดึงข้อมูลที่เชี่ยวชาญ\nให้ดึงเฉพาะข้อมูลที่เกี่ยวข้องจากข้อความเท่านั้น\nหากคุณไม่ทราบค่าของคุณลักษณะที่ถูกขอให้ดึงออกมา คุณสามารถละเว้นค่าของคุณลักษณะนั้นได้.\n\nให้ตอบเป็นภาษาไทยเท่านั้น"
+        }
+      },
+      "id": "f5c923f5-16db-4024-8eb7-70aac0d3666a",
+      "name": "Extract Meta Data",
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "position": [
+        1020,
+        980
+      ],
+      "typeVersion": 1,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        840,
+        1360
+      ],
+      "id": "dfd51ddb-5ebf-44ec-84bf-6e16943ff0c7",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1480,
+        1120
+      ],
+      "id": "100d9756-35ee-41cd-b8d3-1f2b8ac29421",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2060,
+        1120
+      ],
+      "id": "db317adf-5357-4114-bb57-20abb63ed859",
+      "name": "Wait",
+      "webhookId": "4a525f0c-e089-43b2-82a2-64730466487f"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        40,
+        900
+      ],
+      "id": "6a6dbf7e-e08f-499c-bc12-8c242aaf52d4",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "prima_product",
+          "mode": "id"
+        },
+        "embeddingBatchSize": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.1,
+      "position": [
+        1700,
+        1120
+      ],
+      "id": "49633a76-a983-4447-8974-e67055bfb19f",
+      "name": "Qdrant Vector Store1",
+      "credentials": {
+        "qdrantApi": {
+          "id": "sHXJobx5femWVLQF",
+          "name": "Prima-Qdrant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1660,
+        1340
+      ],
+      "id": "b0a0f2be-efc0-4781-86b4-cc7eaad60c4a",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.content }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "Description",
+                "value": "={{ $json.output }}"
+              },
+              {
+                "name": "file_id",
+                "value": "={{ $json.documentId }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        1340
+      ],
+      "id": "49d8d3a6-1fb2-4da1-b653-0c9601ef8d04",
+      "name": "Default Data Loader1"
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "chunkOverlap": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        1500
+      ],
+      "id": "422bfa67-9bc0-448d-9299-5cc8582a5bf2",
+      "name": "Token Splitter1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $('Loop Over Items1').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        740,
+        980
+      ],
+      "id": "ab987647-ecb6-4078-ba9f-0d16afb794cb",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "PlMIisylQMEU4bOI",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-exp",
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "id": "59aec128-7325-42bc-b09a-6b45300a28bd",
+      "name": "Google Gemini Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        1000,
+        1980
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Jh2jTlBnS9WS3krK",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.content }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "overarching_theme",
+              "description": "Summarize the main theme(s) discussed in the \"Overarching Theme\" section."
+            },
+            {
+              "name": "recurring_topics",
+              "description": "List the recurring topics mentioned in the \"Common Threads\" section as an array of strings."
+            },
+            {
+              "name": "pain_points",
+              "description": "Summarize the user's frustrations or challenges mentioned in the \"Pain Points\" section as an array of strings."
+            },
+            {
+              "name": "analytical_insights",
+              "description": "Extract a list of key analytical observations from the \"Analytical Insights\" section, including shifts in tone or behavior."
+            },
+            {
+              "name": "conclusion",
+              "description": "Summarize the conclusions drawn about the user’s threads and their overall focus."
+            },
+            {
+              "name": "keywords",
+              "description": "Generate a list of 10 keywords that capture the essence of the document (e.g., \"askNostr,\" \"decentralization,\" \"spam filtering\")."
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "=คุณคืออัลกอริทึมสำหรับการดึงข้อมูลที่เชี่ยวชาญ\nให้ดึงเฉพาะข้อมูลที่เกี่ยวข้องจากข้อความเท่านั้น\nหากคุณไม่ทราบค่าของคุณลักษณะที่ถูกขอให้ดึงออกมา คุณสามารถละเว้นค่าของคุณลักษณะนั้นได้.\n\nให้ตอบเป็นภาษาไทยเท่านั้น"
+        }
+      },
+      "id": "929e2e1e-ab93-4bc3-b053-63b41a20cf46",
+      "name": "Extract Meta Data1",
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "position": [
+        1100,
+        1800
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        2180
+      ],
+      "id": "30535b24-017f-46a8-8c52-39955644f7ae",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1560,
+        1940
+      ],
+      "id": "110d47f2-2c80-4b7c-91cd-fa4b6d627375",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2140,
+        1940
+      ],
+      "id": "a7b16da7-802a-48e8-9e45-5606b356d2a3",
+      "name": "Wait1",
+      "webhookId": "4a525f0c-e089-43b2-82a2-64730466487f"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        200,
+        1700
+      ],
+      "id": "59d8818d-38be-4091-b79e-1e5e0ffc8592",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "prima_knowledge",
+          "mode": "id"
+        },
+        "embeddingBatchSize": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.1,
+      "position": [
+        1780,
+        1940
+      ],
+      "id": "3e845b2a-9141-448b-9cd9-7f21adcd0fb5",
+      "name": "Qdrant Vector Store2",
+      "credentials": {
+        "qdrantApi": {
+          "id": "sHXJobx5femWVLQF",
+          "name": "Prima-Qdrant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1740,
+        2160
+      ],
+      "id": "03683a49-ff9d-4720-ba88-b97ce5b69e52",
+      "name": "Embeddings OpenAI2",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.content }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "Description",
+                "value": "={{ $json.output }}"
+              },
+              {
+                "name": "file_id",
+                "value": "={{ $json.documentId }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        2160
+      ],
+      "id": "79320b03-e303-43dc-be76-d1b5fc9f3823",
+      "name": "Default Data Loader2"
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "chunkOverlap": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
+      "typeVersion": 1,
+      "position": [
+        2040,
+        2320
+      ],
+      "id": "1cd41af5-0d03-4be8-9cbe-070e134f8718",
+      "name": "Token Splitter2"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $('Loop Over Items2').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        800,
+        1800
+      ],
+      "id": "6d134168-8ad6-4b7d-8d9f-62bec251e429",
+      "name": "Google Docs1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "PlMIisylQMEU4bOI",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteCollection",
+        "collectionName": {
+          "__rl": true,
+          "value": "prima_FAQ",
+          "mode": "name"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-qdrant.qdrant",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        180
+      ],
+      "id": "d0b67011-0684-466d-bf1b-29c095e4b9a9",
+      "name": "prima_FAQ",
+      "credentials": {
+        "qdrantRestApi": {
+          "id": "IpnNF5FeNM2THqtD",
+          "name": "Prima Qdrant account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1jhZeLnEGZZGwah-vu3q5DBSSd2lPa27l",
+            "mode": "list",
+            "cachedResultName": "FAQ",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1jhZeLnEGZZGwah-vu3q5DBSSd2lPa27l"
+          }
+        },
+        "options": {
+          "fields": [
+            "version",
+            "id",
+            "name",
+            "webViewLink"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1180,
+        200
+      ],
+      "id": "9edda75b-07bd-49e9-a8ba-577b9e82cd7d",
+      "name": "Google Drive2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8OWSbdNSTQ59klCQ",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7afb24d3-b405-4e71-8d7a-daae58591808",
+              "leftValue": "={{ $('Google Drive2').item.json.id }}",
+              "rightValue": "={{ $json.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -620,
+        200
+      ],
+      "id": "c20f6b0f-4e7e-4896-b4ca-dd91fa99f645",
+      "name": "If",
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FAQ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -1000,
+        200
+      ],
+      "id": "f91094e8-3f24-4e71-9ba5-ed0d3bee2d74",
+      "name": "Google Sheets1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FAQ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Google Drive2').item.json.id }}",
+            "name": "={{ $('Google Drive2').item.json.name }}",
+            "link": "={{ $('Google Drive2').item.json.webViewLink }}",
+            "version": "={{ $('Google Drive2').item.json.version }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -380,
+        280
+      ],
+      "id": "dc0bf35c-21f7-49e9-8607-61ccaf03e882",
+      "name": "Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "819fb4cf-4ac2-459e-87ac-3dc5d9b68a1d",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "8fc1465c-7614-4120-89e1-c880c3ca409f",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "53355d67-08b4-4633-b489-90bf11ed2bbc",
+              "name": "version",
+              "value": "={{ $json.version }}",
+              "type": "string"
+            },
+            {
+              "id": "05781d1b-3632-426c-993f-1b43fbac4d55",
+              "name": "webViewLink",
+              "value": "={{ $json.webViewLink }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -800,
+        200
+      ],
+      "id": "c0405932-4e20-4907-86dc-f7708443d44f",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f78fe00c-6f80-4fd3-be5c-eb6240e770c9",
+              "leftValue": "={{ $('Google Drive2').item.json.version }}",
+              "rightValue": "={{ $('Edit Fields4').item.json.version }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -380,
+        100
+      ],
+      "id": "4e2d57de-acb6-4159-b4bf-3d76dc43fe7a",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1380,
+        200
+      ],
+      "id": "d7ad7031-7497-4e71-9837-0e0aeac95b0d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1sTx-D32hVN31UWQpuoTnik-T32e6K_5q",
+            "mode": "list",
+            "cachedResultName": "Product",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1sTx-D32hVN31UWQpuoTnik-T32e6K_5q"
+          }
+        },
+        "options": {
+          "fields": [
+            "version",
+            "id",
+            "name",
+            "webViewLink"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2400,
+        840
+      ],
+      "id": "6bbb67cd-3ca5-48e7-99fa-53d514bcc0d5",
+      "name": "Google Drive3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8OWSbdNSTQ59klCQ",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 364396319,
+          "mode": "list",
+          "cachedResultName": "Products",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=364396319"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -2400,
+        1160
+      ],
+      "id": "80715b43-6413-4a94-a78b-4e4b98474f3f",
+      "name": "Google Sheets3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 364396319,
+          "mode": "list",
+          "cachedResultName": "Products",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=364396319"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "name": "=",
+            "version": "={{ $json.version }}",
+            "link": "="
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -560,
+        980
+      ],
+      "id": "181366bb-6fa4-4663-85e4-44e86144382f",
+      "name": "Google Sheets4",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1940,
+        980
+      ],
+      "id": "33d40ba0-66b9-486a-b443-3d5fea87405d",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "drive",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -2200,
+        840
+      ],
+      "id": "55830925-e412-4ec0-b4a3-cd1affef8742",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "track",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -2220,
+        1160
+      ],
+      "id": "f396c7fa-6200-4dcd-b73f-5e3b73afa3dc",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const driveFiles = $input.first().json.drive;\nconst trackedFiles = $input.first().json.track;\n\nconst filesToUpdate = [];\nconst updatedSheetRows = []; // For updating Google Sheet later\nconst newSheetRows = []; // For adding new files to Google Sheet later\n\n// Create a map for quick lookup of tracked files by ID\nconst trackedMap = new Map();\nfor (const trackFile of trackedFiles) {\n    trackedMap.set(trackFile.id, trackFile);\n}\n\nfor (const driveFile of driveFiles) {\n    const driveId = driveFile.id;\n    const driveVersion = parseInt(driveFile.version, 10); // Convert drive version to number\n\n    if (trackedMap.has(driveId)) {\n        // File exists in tracking sheet\n        const trackFile = trackedMap.get(driveId);\n        const trackVersion = parseInt(trackFile.version, 10); // Ensure track version is number\n\n        if (driveVersion > trackVersion) {\n            // File has a newer version in Google Drive\n            filesToUpdate.push({\n                ...driveFile,\n                reason: \"version_mismatch\",\n                sheet_row_number: trackFile.row_number // Keep track of row to update\n            });\n            updatedSheetRows.push({\n                row_number: trackFile.row_number,\n                id: driveFile.id,\n                name: driveFile.name,\n                version: driveVersion,\n                link: driveFile.webViewLink\n            });\n        }\n    } else {\n        // New file in Google Drive (not found in tracking sheet)\n        filesToUpdate.push({\n            ...driveFile,\n            reason: \"new_file\"\n        });\n        newSheetRows.push({\n            id: driveFile.id,\n            name: driveFile.name,\n            version: driveVersion,\n            link: driveFile.webViewLink\n        });\n    }\n}\n\n// Output the files that need RAG update\nreturn [{ json: { filesToUpdate: filesToUpdate, updatedSheetRows: updatedSheetRows, newSheetRows: newSheetRows } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1780,
+        980
+      ],
+      "id": "8094fd03-d656-4785-b39f-a39cd86423a2",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "resource": "point",
+        "operation": "deletePoints",
+        "collectionName": {
+          "__rl": true,
+          "value": "prima_product",
+          "mode": "list",
+          "cachedResultName": "prima_product"
+        },
+        "points": "",
+        "filter": "={\n    \"must\": [\n      {\n        \"key\": \"metadata.file_id\",\n        \"match\": {\n          \"value\": \"{{ $json.id }}\"\n        }\n      }\n    ]\n}",
+        "wait": false,
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-qdrant.qdrant",
+      "typeVersion": 1,
+      "position": [
+        500,
+        840
+      ],
+      "id": "7f016160-7ba3-4927-8d4a-ab56d16eea32",
+      "name": "Delete Products Qdrant",
+      "credentials": {
+        "qdrantRestApi": {
+          "id": "IpnNF5FeNM2THqtD",
+          "name": "Prima Qdrant account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "filesToUpdate",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        800
+      ],
+      "id": "986e92e7-dc7c-4bce-9108-bfc81afb8ec7",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2ea14e77-0ee4-4bf3-990b-1865e2171858",
+              "name": "filesToUpdate",
+              "value": "={{ $json.filesToUpdate }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1500,
+        820
+      ],
+      "id": "cb9078ed-8781-4055-8311-b5e1ce9b8bb9",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b33edd39-eac9-48a5-9d2c-a194ed6e49db",
+              "name": "updatedSheetRows",
+              "value": "={{ $json.updatedSheetRows }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1500,
+        980
+      ],
+      "id": "8ab2a1e9-3825-4d0a-a06c-f8cf7a8c7079",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9c81eec2-5c6d-4e37-87ea-378ad94950d9",
+              "name": "newSheetRows",
+              "value": "={{ $json.newSheetRows }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1500,
+        1160
+      ],
+      "id": "8cf18ace-2242-4576-8e0b-eb3c64f1abb0",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6ff012d5-65bc-4cb9-bb5f-7aade2547f9a",
+              "leftValue": "={{ $json.filesToUpdate }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1280,
+        820
+      ],
+      "id": "94e9c929-1762-4389-9060-97f9b173ad9a",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "94ebd0c7-0ebd-4159-b9b4-e725c26b278a",
+              "leftValue": "={{ $json.updatedSheetRows }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1280,
+        980
+      ],
+      "id": "8bd5781a-1331-4f7c-9167-480188b001a0",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "updatedSheetRows",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        960
+      ],
+      "id": "9d1c0c68-73cd-41f4-b418-1365ed6bb7eb",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -800,
+        960
+      ],
+      "id": "f96f3351-d221-4e6b-8edd-121c78461f1d",
+      "name": "Loop Over Items5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b8657b1b-ac6e-43cc-a590-5e7e6990350f",
+              "leftValue": "={{ $json.newSheetRows }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1280,
+        1160
+      ],
+      "id": "2fdb84d0-d698-4b7f-a1bc-9529331e57c6",
+      "name": "If7"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "newSheetRows",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        1160
+      ],
+      "id": "a392dbac-652e-427e-8e41-ce7abe7084b3",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "47591d19-6b4d-48f4-b8ec-39c352ef72ba",
+              "leftValue": "={{ $json.reason }}",
+              "rightValue": "version_mismatch",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        980
+      ],
+      "id": "29d29386-0262-40cb-a64f-642f47cfeb09",
+      "name": "If8"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 364396319,
+          "mode": "list",
+          "cachedResultName": "Products",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=364396319"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "name": "={{ $json.name }}",
+            "version": "={{ $json.version }}",
+            "link": "={{ $json.link }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -560,
+        1240
+      ],
+      "id": "76f7927f-1479-4162-80db-9acac1ae6415",
+      "name": "Google Sheets6",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -800,
+        1220
+      ],
+      "id": "e0a1b74a-6fdc-43ed-90b5-1b4b98b29600",
+      "name": "Loop Over Items7"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "47591d19-6b4d-48f4-b8ec-39c352ef72ba",
+              "leftValue": "={{ $json.reason }}",
+              "rightValue": "version_mismatch",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        1800
+      ],
+      "id": "edc6837b-9c3e-474b-8f76-a8fe6cd62cb1",
+      "name": "If9"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1FZvs8M-BcmCQkRoME3rRXksIPODtl31Z",
+            "mode": "list",
+            "cachedResultName": "Knowledge",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1FZvs8M-BcmCQkRoME3rRXksIPODtl31Z"
+          }
+        },
+        "options": {
+          "fields": [
+            "version",
+            "id",
+            "name",
+            "webViewLink"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2400,
+        1580
+      ],
+      "id": "2942e8f9-3a8b-4854-91ce-f0cf3d000d70",
+      "name": "Google Drive",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8OWSbdNSTQ59klCQ",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1040966831,
+          "mode": "list",
+          "cachedResultName": "Knowledge",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=1040966831"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -2400,
+        1900
+      ],
+      "id": "15adcd2b-fcf9-4b7c-95d0-fd5ac3cdca99",
+      "name": "Google Sheets5",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1040966831,
+          "mode": "list",
+          "cachedResultName": "Knowledge",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=1040966831"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "name": "=",
+            "version": "={{ $json.version }}",
+            "link": "="
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -560,
+        1720
+      ],
+      "id": "29f636f2-1745-45e8-a9a0-03f1c116f084",
+      "name": "Google Sheets7",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1940,
+        1720
+      ],
+      "id": "7de9b256-8719-4d1b-b5aa-db7c266ba8cf",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "drive",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -2200,
+        1580
+      ],
+      "id": "a55757e5-7580-4594-97df-52eb707d2535",
+      "name": "Aggregate3"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "track",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -2220,
+        1900
+      ],
+      "id": "f4e7822f-a8ad-4f7e-b18e-a2a36085d82b",
+      "name": "Aggregate4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const driveFiles = $input.first().json.drive;\nconst trackedFiles = $input.first().json.track;\n\nconst filesToUpdate = [];\nconst updatedSheetRows = []; // For updating Google Sheet later\nconst newSheetRows = []; // For adding new files to Google Sheet later\n\n// Create a map for quick lookup of tracked files by ID\nconst trackedMap = new Map();\nfor (const trackFile of trackedFiles) {\n    trackedMap.set(trackFile.id, trackFile);\n}\n\nfor (const driveFile of driveFiles) {\n    const driveId = driveFile.id;\n    const driveVersion = parseInt(driveFile.version, 10); // Convert drive version to number\n\n    if (trackedMap.has(driveId)) {\n        // File exists in tracking sheet\n        const trackFile = trackedMap.get(driveId);\n        const trackVersion = parseInt(trackFile.version, 10); // Ensure track version is number\n\n        if (driveVersion > trackVersion) {\n            // File has a newer version in Google Drive\n            filesToUpdate.push({\n                ...driveFile,\n                reason: \"version_mismatch\",\n                sheet_row_number: trackFile.row_number // Keep track of row to update\n            });\n            updatedSheetRows.push({\n                row_number: trackFile.row_number,\n                id: driveFile.id,\n                name: driveFile.name,\n                version: driveVersion,\n                link: driveFile.webViewLink\n            });\n        }\n    } else {\n        // New file in Google Drive (not found in tracking sheet)\n        filesToUpdate.push({\n            ...driveFile,\n            reason: \"new_file\"\n        });\n        newSheetRows.push({\n            id: driveFile.id,\n            name: driveFile.name,\n            version: driveVersion,\n            link: driveFile.webViewLink\n        });\n    }\n}\n\n// Output the files that need RAG update\nreturn [{ json: { filesToUpdate: filesToUpdate, updatedSheetRows: updatedSheetRows, newSheetRows: newSheetRows } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1780,
+        1720
+      ],
+      "id": "76a55a54-d689-47a8-b702-0dc50527dcb9",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "filesToUpdate",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        1540
+      ],
+      "id": "453d82b3-3af2-4d5a-9ea5-ed265c263363",
+      "name": "Split Out3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2ea14e77-0ee4-4bf3-990b-1865e2171858",
+              "name": "filesToUpdate",
+              "value": "={{ $json.filesToUpdate }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1500,
+        1560
+      ],
+      "id": "8e002875-5e29-4758-89fc-ba396940bf88",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b33edd39-eac9-48a5-9d2c-a194ed6e49db",
+              "name": "updatedSheetRows",
+              "value": "={{ $json.updatedSheetRows }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1500,
+        1720
+      ],
+      "id": "ed66752c-6bb0-4baf-b8b1-426914bc797c",
+      "name": "Edit Fields7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9c81eec2-5c6d-4e37-87ea-378ad94950d9",
+              "name": "newSheetRows",
+              "value": "={{ $json.newSheetRows }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1500,
+        1900
+      ],
+      "id": "15653104-d6a4-48ae-ab2f-2ee65ddd15b8",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6ff012d5-65bc-4cb9-bb5f-7aade2547f9a",
+              "leftValue": "={{ $json.filesToUpdate }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1280,
+        1560
+      ],
+      "id": "7934deed-6cf7-4156-8b91-4218d731178e",
+      "name": "If10"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "94ebd0c7-0ebd-4159-b9b4-e725c26b278a",
+              "leftValue": "={{ $json.updatedSheetRows }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1280,
+        1720
+      ],
+      "id": "d418509a-0068-4e1e-b895-1107f76fa3ce",
+      "name": "If11"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "updatedSheetRows",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        1700
+      ],
+      "id": "0231e843-ba0b-4e6f-8da3-58f8889fe7eb",
+      "name": "Split Out4"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -800,
+        1700
+      ],
+      "id": "5820fba6-2974-4aff-931b-cbf57c9d5b40",
+      "name": "Loop Over Items6"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b8657b1b-ac6e-43cc-a590-5e7e6990350f",
+              "leftValue": "={{ $json.newSheetRows }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1280,
+        1900
+      ],
+      "id": "a7da6580-54cb-420f-a398-49feedf2c8ad",
+      "name": "If12"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "newSheetRows",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        1900
+      ],
+      "id": "d487627d-fbba-470a-a9ed-6e296391f41f",
+      "name": "Split Out5"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1040966831,
+          "mode": "list",
+          "cachedResultName": "Knowledge",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=1040966831"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "name": "={{ $json.name }}",
+            "version": "={{ $json.version }}",
+            "link": "={{ $json.link }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -560,
+        1980
+      ],
+      "id": "7ab6a6f6-2f7d-4751-b637-0e0ce9f9e9a5",
+      "name": "Google Sheets8",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -800,
+        1960
+      ],
+      "id": "a2f4350a-f7cc-48a1-8e76-4a4faa454e54",
+      "name": "Loop Over Items8"
+    },
+    {
+      "parameters": {
+        "resource": "point",
+        "operation": "deletePoints",
+        "collectionName": {
+          "__rl": true,
+          "value": "prima_knowledge",
+          "mode": "list",
+          "cachedResultName": "prima_knowledge"
+        },
+        "points": "",
+        "filter": "={\n    \"must\": [\n      {\n        \"key\": \"metadata.file_id\",\n        \"match\": {\n          \"value\": \"{{ $json.id }}\"\n        }\n      }\n    ]\n}",
+        "wait": false,
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-qdrant.qdrant",
+      "typeVersion": 1,
+      "position": [
+        600,
+        1660
+      ],
+      "id": "fd2709af-fd47-4796-b340-07539d77dc83",
+      "name": "Delete Knowledge Qdrant1",
+      "credentials": {
+        "qdrantRestApi": {
+          "id": "IpnNF5FeNM2THqtD",
+          "name": "Prima Qdrant account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2760,
+        1020
+      ],
+      "id": "da5b1e31-dcfd-4192-9ef5-df88eb8f3501",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2700,
+        1760
+      ],
+      "id": "c349c441-f49e-4234-8a33-cc08aee1ee33",
+      "name": "Schedule Trigger2"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FAQ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Google Drive2').item.json.id }}",
+            "name": "=",
+            "version": "={{ $('Google Drive2').item.json.version }}",
+            "link": "="
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        740,
+        80
+      ],
+      "id": "e47bf230-f85a-4e86-a496-232beab59d62",
+      "name": "Google Sheets9",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# FAQ",
+        "height": 120
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1080,
+        140
+      ],
+      "typeVersion": 1,
+      "id": "c6c9b358-299b-4bc8-ad6a-a4a8603da21a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Database"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -420,
+        -320
+      ],
+      "typeVersion": 1,
+      "id": "bd7ee687-2c9a-4d4e-8654-9afa409c8ac4",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Products",
+        "height": 120
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1700,
+        980
+      ],
+      "typeVersion": 1,
+      "id": "440e49d4-ed12-419c-8b8b-cb0a43c346da",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Knowledge",
+        "height": 120
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1780,
+        1800
+      ],
+      "typeVersion": 1,
+      "id": "3d07605a-fb08-44cb-bb9e-b9859f095b86",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1OonQBypSyeAFoFUEjBO7gUhr9m5jpQSz",
+            "mode": "list",
+            "cachedResultName": "Product_Review",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1OonQBypSyeAFoFUEjBO7gUhr9m5jpQSz"
+          },
+          "whatToSearch": "files"
+        },
+        "options": {
+          "fields": [
+            "*"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2380,
+        2320
+      ],
+      "id": "47fdf9a6-7138-4dca-93e8-ac3af13c572e",
+      "name": "Google Drive1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8OWSbdNSTQ59klCQ",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "18882993-93ae-4882-b7bd-182b173ab56a",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "49a37839-4743-402c-a6f6-29332c6281aa",
+              "name": "name",
+              "value": "={{ $json.name.replace('.jpg', '') }}",
+              "type": "string"
+            },
+            {
+              "id": "6dcaf83f-2d8f-4729-9a81-c0a6ba827113",
+              "name": "version",
+              "value": "={{ $json.version }}",
+              "type": "string"
+            },
+            {
+              "id": "66916946-7c47-47a3-9677-ac5489731591",
+              "name": "webContentLink",
+              "value": "={{ $json.webContentLink }}",
+              "type": "string"
+            },
+            {
+              "id": "ddb0fdd8-0dee-40fc-9bc2-e19a48e5ff74",
+              "name": "thumbnailLink",
+              "value": "={{ $json.thumbnailLink }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2160,
+        2320
+      ],
+      "id": "2393e9d6-f693-4c90-9bcc-dc1f1150d31f",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1323180623,
+          "mode": "list",
+          "cachedResultName": "Product_Review",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=1323180623"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -2380,
+        2580
+      ],
+      "id": "b80e78fa-e2db-4fe3-ae15-af278530a98d",
+      "name": "Google Sheets10",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "track",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -2180,
+        2580
+      ],
+      "id": "4148d9c9-9e62-4c0e-872c-0c25902da8b7",
+      "name": "Aggregate5"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1660,
+        2460
+      ],
+      "id": "ea3361d0-17be-4205-8a9b-03b25815be44",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const driveFiles = $input.first().json.drive;\nconst trackedFiles = $input.first().json.track;\n\nconst filesToUpdateRAG = []; // Files that need RAG update (new or modified)\nconst updatedSheetRows = []; // Files to update in Google Sheet (version mismatch)\nconst newSheetRows = []; // Files to add as new rows in Google Sheet\n\n// Create a map for quick lookup of tracked files by ID\nconst trackedMap = new Map();\nfor (const trackFile of trackedFiles) {\n    trackedMap.set(trackFile.id, trackFile);\n}\n\nfor (const driveFile of driveFiles) {\n    const driveId = driveFile.id;\n    // Ensure drive version is parsed as an integer for proper comparison\n    const driveVersion = parseInt(driveFile.version, 10); \n\n    // Prepare common file details for updates\n    const commonFileData = {\n        id: driveFile.id,\n        name: driveFile.name,\n        version: driveVersion,\n        webContentLink: driveFile.webContentLink, // Include webContentLink\n        thumbnailLink: driveFile.thumbnailLink   // Include thumbnailLink\n    };\n\n    if (trackedMap.has(driveId)) {\n        // File exists in tracking sheet\n        const trackFile = trackedMap.get(driveId);\n        // Ensure track version is parsed as an integer\n        const trackVersion = parseInt(trackFile.version, 10); \n\n        if (driveVersion > trackVersion) {\n            // File has a newer version in Google Drive\n            filesToUpdateRAG.push({\n                ...commonFileData,\n                reason: \"version_mismatch\",\n                sheet_row_number: trackFile.row_number // Keep track of row to update\n            });\n            // Add to list for updating the Google Sheet\n            updatedSheetRows.push({\n                row_number: trackFile.row_number,\n                ...commonFileData // Use commonFileData to keep all relevant fields\n            });\n        }\n        // If version is the same or older, do nothing (assume it's already processed)\n    } else {\n        // New file in Google Drive (not found in tracking sheet)\n        filesToUpdateRAG.push({\n            ...commonFileData,\n            reason: \"new_file\"\n        });\n        // Add to list for adding to Google Sheet\n        newSheetRows.push({\n            ...commonFileData // Use commonFileData to keep all relevant fields\n        });\n    }\n}\n\n// Output the lists. Each list will be an item in the n8n output.\nreturn [\n    { json: { \n        filesToUpdateRAG: filesToUpdateRAG, \n        updatedSheetRows: updatedSheetRows, \n        newSheetRows: newSheetRows \n    }}\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1500,
+        2460
+      ],
+      "id": "97d6fd14-601a-4f5d-86d1-4055b86d7795",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1323180623,
+          "mode": "list",
+          "cachedResultName": "Product_Review",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=1323180623"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "name": "={{ $json.name }}",
+            "version": "={{ $json.version }}",
+            "webContentLink": "={{ $json.webContentLink }}",
+            "thumbnailLink": "={{ $json.thumbnailLink }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "webContentLink",
+              "displayName": "webContentLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "thumbnailLink",
+              "displayName": "thumbnailLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -280,
+        2500
+      ],
+      "id": "497bbdac-b55f-4fb9-9e18-d44b240bf435",
+      "name": "Google Sheets11",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "drive",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1920,
+        2320
+      ],
+      "id": "8568d96f-fbc8-4727-8ce1-b6a55dc19303",
+      "name": "Aggregate6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b33edd39-eac9-48a5-9d2c-a194ed6e49db",
+              "name": "updatedSheetRows",
+              "value": "={{ $json.updatedSheetRows }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1180,
+        2480
+      ],
+      "id": "c68f38c0-1c25-4b9d-8c53-7e3d40bdd4ce",
+      "name": "Edit Fields9"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9c81eec2-5c6d-4e37-87ea-378ad94950d9",
+              "name": "newSheetRows",
+              "value": "={{ $json.newSheetRows }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1180,
+        2660
+      ],
+      "id": "258ac8d8-4b7e-4f85-ab05-cc770ee52e10",
+      "name": "Edit Fields10"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "94ebd0c7-0ebd-4159-b9b4-e725c26b278a",
+              "leftValue": "={{ $json.updatedSheetRows }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -960,
+        2480
+      ],
+      "id": "d7bd8d0b-c3d0-4388-a688-90f0338cef7a",
+      "name": "If13"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b8657b1b-ac6e-43cc-a590-5e7e6990350f",
+              "leftValue": "={{ $json.newSheetRows }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -960,
+        2660
+      ],
+      "id": "1297945f-99b5-49f0-b39f-8d89626dc971",
+      "name": "If14"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "updatedSheetRows",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -740,
+        2460
+      ],
+      "id": "b23de014-fc49-4df7-af11-cd79ba16f7a1",
+      "name": "Split Out6"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -520,
+        2460
+      ],
+      "id": "d08d1fb5-ff4f-4bcd-93ef-2d5163477729",
+      "name": "Loop Over Items9"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM",
+          "mode": "list",
+          "cachedResultName": "File_Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1323180623,
+          "mode": "list",
+          "cachedResultName": "Product_Review",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pGNu4sLhdHLU8dbAAR2FWpXNzDcerIRwktli2bd9WGM/edit#gid=1323180623"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "name": "={{ $json.name }}",
+            "version": "={{ $json.version }}",
+            "webContentLink": "={{ $json.webContentLink }}",
+            "thumbnailLink": "={{ $json.thumbnailLink }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "webContentLink",
+              "displayName": "webContentLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "thumbnailLink",
+              "displayName": "thumbnailLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -280,
+        2800
+      ],
+      "id": "dd54c6e2-1681-4908-acc4-ebbf0d18768b",
+      "name": "Google Sheets12",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "newSheetRows",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        2760
+      ],
+      "id": "d9d2bddc-453d-4fe8-8018-ff79c9128e6b",
+      "name": "Split Out7"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -520,
+        2760
+      ],
+      "id": "4175550c-c66a-4ae5-9d45-65bc6ee9ed1f",
+      "name": "Loop Over Items10"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "filesToUpdateRAG",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        2300
+      ],
+      "id": "39a13657-dcdf-4d99-8e46-a3f1afff3806",
+      "name": "Split Out8"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        240,
+        2300
+      ],
+      "id": "9e65a2ac-ffb9-4f2d-bd3c-743c80808679",
+      "name": "Loop Over Items11"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "47591d19-6b4d-48f4-b8ec-39c352ef72ba",
+              "leftValue": "={{ $json.reason }}",
+              "rightValue": "version_mismatch",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        2620
+      ],
+      "id": "47278e27-b9d3-440f-ba50-cc854900be59",
+      "name": "If16"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "181a9952-43df-4a0f-8f3a-2eb9316856dd",
+              "name": "id",
+              "value": "={{ $('Loop Over Items11').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "6f11cbd7-ee44-4e01-b76b-ae20feabdf9f",
+              "name": "name",
+              "value": "={{ $('Loop Over Items11').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "497c9bae-5c4c-4b92-a531-d327afcc32a3",
+              "name": "webContentLink",
+              "value": "={{ $('Loop Over Items11').item.json.webContentLink }}",
+              "type": "string"
+            },
+            {
+              "id": "f7bcb418-3aa7-4b76-a0c0-ace8c61467c7",
+              "name": "thumbnailLink",
+              "value": "={{ $('Loop Over Items11').item.json.thumbnailLink }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1060,
+        2660
+      ],
+      "id": "d76ccadc-892b-428c-96fe-a536990c46ac",
+      "name": "Edit Fields12"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d924d6d9-73fc-4908-b35b-b5d79142012d",
+              "name": "filesToUpdateRAG",
+              "value": "={{ $json.filesToUpdateRAG }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1180,
+        2300
+      ],
+      "id": "2c393b23-7cd9-47fa-9cf2-07a7365b9536",
+      "name": "Edit Fields11"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6ff012d5-65bc-4cb9-bb5f-7aade2547f9a",
+              "leftValue": "={{ $json.filesToUpdateRAG }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -960,
+        2300
+      ],
+      "id": "42d55495-c13e-4703-a645-859c585f3ff9",
+      "name": "If15"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        2660
+      ],
+      "id": "8e9fcc51-0107-449b-b57a-f0f53d178a2c",
+      "name": "Wait2",
+      "webhookId": "4a525f0c-e089-43b2-82a2-64730466487f"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "prima_product_review",
+          "mode": "id"
+        },
+        "embeddingBatchSize": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.1,
+      "position": [
+        1240,
+        2660
+      ],
+      "id": "b5ae808c-0446-482e-9712-822214cd0cea",
+      "name": "Qdrant Vector Store3",
+      "credentials": {
+        "qdrantApi": {
+          "id": "sHXJobx5femWVLQF",
+          "name": "Prima-Qdrant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1200,
+        2880
+      ],
+      "id": "6c2974f0-2a9c-4655-ae09-75b014c378a6",
+      "name": "Embeddings OpenAI3",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $('Edit Fields12').item.json.name }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "file_id",
+                "value": "={{ $('Edit Fields12').item.json.id }}"
+              },
+              {
+                "name": "=webContentLink",
+                "value": "={{ $('Edit Fields12').item.json.webContentLink }}"
+              },
+              {
+                "name": "thumbnailLink",
+                "value": "={{ $('Edit Fields12').item.json.thumbnailLink }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        2880
+      ],
+      "id": "992cb972-f19f-4405-90e2-44f655d1745f",
+      "name": "Default Data Loader3"
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "chunkOverlap": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        3100
+      ],
+      "id": "91d52581-3de1-4f9d-add5-143a952a5a5a",
+      "name": "Token Splitter3"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 2,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2700,
+        2420
+      ],
+      "id": "64690501-0d1e-45bd-aaa1-6b66bf0b7a38",
+      "name": "Schedule Trigger3"
+    },
+    {
+      "parameters": {
+        "resource": "point",
+        "operation": "deletePoints",
+        "collectionName": {
+          "__rl": true,
+          "value": "prima_product_review",
+          "mode": "list",
+          "cachedResultName": "prima_product_review"
+        },
+        "points": "",
+        "filter": "={\n    \"must\": [\n      {\n        \"key\": \"metadata.file_id\",\n        \"match\": {\n          \"value\": \"{{ $json.id }}\"\n        }\n      }\n    ]\n}",
+        "wait": false,
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-qdrant.qdrant",
+      "typeVersion": 1,
+      "position": [
+        760,
+        2480
+      ],
+      "id": "7783540d-5f18-442c-a9eb-547cce7a3abe",
+      "name": "Delete Review Qdrant",
+      "credentials": {
+        "qdrantRestApi": {
+          "id": "IpnNF5FeNM2THqtD",
+          "name": "Prima Qdrant account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        180
+      ],
+      "id": "cd53e6f5-8380-46ee-b4a9-4810d7490a74",
+      "name": "Wait3",
+      "webhookId": "2edf498d-2bfc-4014-9a1d-320f45c1c729"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -380,
+        980
+      ],
+      "id": "b384c13a-5b8b-4597-855b-61d2df65a36c",
+      "name": "Wait4",
+      "webhookId": "2dbe7793-f1b8-4fee-98eb-eb4be7ba0345"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -340,
+        1240
+      ],
+      "id": "ed754293-31d6-4aa0-8293-4f155ac0d2bb",
+      "name": "Wait5",
+      "webhookId": "fadf48de-88c2-4919-b1fd-ad403ef67a8f"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -340,
+        1720
+      ],
+      "id": "dba6d917-6b58-4283-9b90-0169037a7509",
+      "name": "Wait6",
+      "webhookId": "a08ad2d4-ab46-4e71-bcd9-c4b7cc1ee21f"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -340,
+        1980
+      ],
+      "id": "10ea1a70-0af2-4a99-8dc9-208a6dff109f",
+      "name": "Wait7",
+      "webhookId": "5d4bd559-953a-409f-b3c3-79262a7b2b5f"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -60,
+        2500
+      ],
+      "id": "1aee7dc6-b562-45f0-ba0a-34996ec0d697",
+      "name": "Wait8",
+      "webhookId": "03185b3d-5f78-44ce-94fc-383b43e578bf"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -60,
+        2800
+      ],
+      "id": "70a0a206-6304-410f-92fc-2a144db8be99",
+      "name": "Wait9",
+      "webhookId": "b77db546-a9cc-4615-a94d-7b635f2edd96"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract Meta Data",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Meta Data": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader1": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token Splitter1": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader1",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extract Meta Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract Meta Data1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Meta Data1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store2": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store2",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader2": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store2",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token Splitter2": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader2",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs1": {
+      "main": [
+        [
+          {
+            "node": "Extract Meta Data1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "prima_FAQ": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "prima_FAQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "prima_FAQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive3": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets3": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Products Qdrant": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items5": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google Sheets4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets4": {
+      "main": [
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If8": {
+      "main": [
+        [
+          {
+            "node": "Delete Products Qdrant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets6": {
+      "main": [
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items7": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google Sheets6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If9": {
+      "main": [
+        [
+          {
+            "node": "Delete Knowledge Qdrant1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Docs1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Aggregate3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets5": {
+      "main": [
+        [
+          {
+            "node": "Aggregate4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets7": {
+      "main": [
+        [
+          {
+            "node": "Wait6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate3": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate4": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "If10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "If11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "If12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If10": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If11": {
+      "main": [
+        [
+          {
+            "node": "Split Out4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out4": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items6": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google Sheets7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If12": {
+      "main": [
+        [
+          {
+            "node": "Split Out5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out5": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets8": {
+      "main": [
+        [
+          {
+            "node": "Wait7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items8": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google Sheets8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Knowledge Qdrant1": {
+      "main": [
+        [
+          {
+            "node": "Google Docs1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets10": {
+      "main": [
+        [
+          {
+            "node": "Aggregate5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate5": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Aggregate6": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields9": {
+      "main": [
+        [
+          {
+            "node": "If13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields10": {
+      "main": [
+        [
+          {
+            "node": "If14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If14": {
+      "main": [
+        [
+          {
+            "node": "Split Out7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out6": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields11",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields9",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If13": {
+      "main": [
+        [
+          {
+            "node": "Split Out6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items9": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google Sheets11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets12": {
+      "main": [
+        [
+          {
+            "node": "Wait9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets11": {
+      "main": [
+        [
+          {
+            "node": "Wait8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out7": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items10": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google Sheets12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out8": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If16": {
+      "main": [
+        [
+          {
+            "node": "Delete Review Qdrant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items11": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields11": {
+      "main": [
+        [
+          {
+            "node": "If15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If15": {
+      "main": [
+        [
+          {
+            "node": "Split Out8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store3": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI3": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store3",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader3": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store3",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token Splitter3": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader3",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields12": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger3": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Review Qdrant": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait5": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait6": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait7": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait8": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait9": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d4335fa5-b071-4bf1-b12f-094d93fd5efc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6f5dcd4ffe573318f7e66827ae7890c40da58a2bf57a9295e74d2423fda39691"
+  },
+  "id": "OpVgpom7IrYkndzv",
+  "tags": []
+}

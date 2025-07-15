@@ -1,0 +1,3640 @@
+{
+  "name": "Follow_Up",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 45
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -280,
+        -340
+      ],
+      "id": "80a25ff4-3e5c-4648-8117-d0d8d60e566d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "สอบถาม"
+            },
+            {
+              "lookupColumn": "status",
+              "lookupValue": "สนใจ"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -80,
+        -340
+      ],
+      "id": "28755d40-d55e-44bd-9eb2-109fefff4790",
+      "name": "Google Sheets1",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "385dde19-c354-4cbb-91d1-6eedc7dc43e5",
+              "name": "user_id",
+              "value": "={{ $json.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "b2f370ba-aadb-4036-afd3-226bab54c463",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "a9f17c0c-b70b-405d-b02d-86f63826c2ae",
+              "name": "last_chat",
+              "value": "={{ $json.last_chat }}",
+              "type": "string"
+            },
+            {
+              "id": "f8dbaeb4-861f-4dec-97db-019561390a94",
+              "name": "last_time",
+              "value": "={{ $json.last_time }}",
+              "type": "string"
+            },
+            {
+              "id": "739406db-b650-41c4-8cac-22e6d2eaba5a",
+              "name": "date",
+              "value": "={{ new Date(Date.now()) }}",
+              "type": "string"
+            },
+            {
+              "id": "2b9192fb-32df-42ed-9a66-e180f0f23304",
+              "name": "follow_up",
+              "value": "={{ $json.follow_up }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        120,
+        -340
+      ],
+      "id": "f75dce92-c313-4b01-a8ee-ff6352b7ba7b",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        340,
+        -340
+      ],
+      "id": "fc77b02c-0c7f-40eb-bd22-26a875db29c9",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        20
+      ],
+      "id": "d3da1822-9671-4b4b-88a8-07a2febc6d34",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.concatenated_data }}",
+        "options": {
+          "systemMessage": "=คุณคือผู้ช่วยอัจฉริยะที่มีหน้าที่ดูแลลูกค้าหลังการสนทนา โดยเฉพาะผู้ที่สอบถามหรือแสดงความสนใจต่อสินค้า แต่ไม่มีการโต้ตอบนานเกิน 3 วัน\n\n============================\n📌 หน้าที่หลักของคุณ:\n\n1. ตรวจสอบสถานะของลูกค้าในฟิลด์ `status` (เช่น `สอบถาม`, `สนใจ`) และจำนวนวันที่ผ่านไป (`days_passed`)\n2. หาก `status` เป็น `สอบถาม` หรือ `สนใจ` และ `inactive` เป็น `true` (เช่น ไม่มีการสนทนาใหม่เกิน 3 วัน):\n   - ให้คุณส่งข้อความติดตาม (follow-up) ไปหาลูกค้าทันที\n\n============================\n💬 แนวทางในการทักลูกค้า:\n\n- น้ำเสียงสุภาพ เป็นมิตร ไม่เร่งเร้า\n- ทบทวนสิ่งที่ลูกค้าเคยสอบถาม/สนใจ (ถ้ามี `last_chat`)\n- ปิดท้ายด้วยการชวนให้กลับมาพูดคุย หรือตัดสินใจสั่งซื้อหากพร้อม\n- การตอบทุกครั้งให้ลงท้ายด้วย \"ครับ\"\n\n============================\n📋 โครงสร้างคำตอบ:\n\nหากมีข้อมูล `last_chat` ให้ตอบประมาณนี้:\n> สวัสดีค่ะคุณ {{name}} ขอบคุณสำหรับคำถามก่อนหน้านี้เกี่ยวกับ: \"{{last_chat}}\"\n> หากยังมีข้อสงสัยเพิ่มเติม หรือต้องการข้อมูลเกี่ยวกับผลิตภัณฑ์เพิ่มเติม ทางเรายินดีช่วยเหลือเลยครับ 😊\n\nหากไม่มี `last_chat` หรือข้อมูลไม่ชัด:\n> สวัสดีค่ะคุณ {{name}} ฉันขออนุญาตสอบถามเพิ่มเติมนะคะ ไม่ทราบว่ายังสนใจข้อมูลเกี่ยวกับผลิตภัณฑ์ของเราหรือไม่ หากมีคำถามเพิ่มเติมสามารถพิมพ์กลับมาได้เลยครับ\n\n============================\n🛑 หมายเหตุ:\n\n- ห้ามพูดถึงสินค้าหรือสรรพคุณใหม่ หากไม่มีข้อมูลจากระบบ\n- ห้ามเดาว่าลูกค้าสนใจอะไรใหม่ ต้องใช้ `status` และ `last_chat` เท่านั้นในการอ้างอิง\n- ห้ามทักหาลูกค้าที่ `status` เป็น `ต้องการซื้อ` หรือไม่มี `inactive: true`\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        2080,
+        -160
+      ],
+      "id": "4714e232-4e37-454e-9ffa-41aa841d6a13",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4d93dec8-c4a4-40ca-bc0c-110562365595",
+              "leftValue": "={{ $json.inactive }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1500,
+        -180
+      ],
+      "id": "01dd16ea-27ba-4fd9-b5fd-b06450b1b14d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ดึงค่า day จาก item ที่มี variable = \"befor_sale\"\nconst dayItem = items.find(i => i.json.variable === \"befor_sale\");\nconst dayThreshold = dayItem ? dayItem.json.day : 2; // default = 2 ถ้าไม่เจอ\n\n// สร้าง output เฉพาะ user items\nreturn items\n  .filter(item => item.json.user_id) // เก็บเฉพาะที่มี user_id\n  .map(item => {\n    const lastTimeStr = item.json.last_time;\n    let lastTime;\n\n    if (lastTimeStr.includes('/')) {\n      // Format: D/M/YYYY\n      const [day, month, year] = lastTimeStr.split('/');\n      lastTime = new Date(`${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}T00:00:00`);\n    } else if (lastTimeStr.includes('-')) {\n      // Format: YYYY-MM-DD H:mm:ss\n      lastTime = new Date(lastTimeStr.replace(' ', 'T'));\n    } else {\n      lastTime = new Date(NaN);\n    }\n\n    const now = new Date();\n    const diffMs = now - lastTime;\n    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));\n\n    item.json.days_passed = diffDays;\n    item.json.inactive = diffDays >= dayThreshold;\n\n    return item;\n  });\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        -180
+      ],
+      "id": "46d49a85-3bcd-406b-85e9-e8e2199b0c34",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2040,
+        40
+      ],
+      "id": "2a1a584c-04f5-4fe1-b750-7c348b976763",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        -160
+      ],
+      "id": "01343d75-2568-47d7-af6d-19f21dc1ef5a",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        -160
+      ],
+      "id": "e079c927-21ae-43fc-b120-2c447d375fc3",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.output = item.json.output.replace(/\\[|\\]/g, '');\n}\n\nreturn $input.all();"
+      },
+      "id": "b1c8b536-1672-4af4-b773-1c573e49b55a",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f16d8c5e-a9de-4be1-beb4-3cdb7a1aa3d0",
+              "name": "output",
+              "value": "={{ $json.output.split() }}",
+              "type": "string"
+            },
+            {
+              "id": "22dfb749-246a-45df-8b17-4bb7b82ba299",
+              "name": "userId",
+              "value": "={{ $('If').item.json.user_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "14ba8f42-dcf3-4990-952e-9ecb1b5dfa18",
+      "name": "Edit Fields6",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2460,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        1200
+      ],
+      "id": "98f12a35-d595-452f-970e-2c6afa054f65",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "sale",
+              "lookupValue": "ปิดการขาย"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        0,
+        1200
+      ],
+      "id": "7924e7f1-7c94-4ec8-bbef-a07d51a54369",
+      "name": "Google Sheets",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "385dde19-c354-4cbb-91d1-6eedc7dc43e5",
+              "name": "user_id",
+              "value": "={{ $json.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "b2f370ba-aadb-4036-afd3-226bab54c463",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "094831d3-f953-4d99-994d-cc84692919b7",
+              "name": "sale",
+              "value": "={{ $json.sale }}",
+              "type": "string"
+            },
+            {
+              "id": "efdfb41e-3b7c-466f-b79b-c5dc7c7e4d0e",
+              "name": "date_sale",
+              "value": "={{ $json.date_sale }}",
+              "type": "string"
+            },
+            {
+              "id": "a9f17c0c-b70b-405d-b02d-86f63826c2ae",
+              "name": "last_chat",
+              "value": "={{ $json.last_chat }}",
+              "type": "string"
+            },
+            {
+              "id": "f8dbaeb4-861f-4dec-97db-019561390a94",
+              "name": "last_time",
+              "value": "={{ $json.last_time }}",
+              "type": "string"
+            },
+            {
+              "id": "739406db-b650-41c4-8cac-22e6d2eaba5a",
+              "name": "date",
+              "value": "={{ new Date(Date.now()) }}",
+              "type": "string"
+            },
+            {
+              "id": "4b416b2c-8a71-4872-92b4-511999a6efe0",
+              "name": "follow_up",
+              "value": "={{ $json.follow_up }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        200,
+        1200
+      ],
+      "id": "8f977496-d62b-40c1-9958-f6adab6939de",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        420,
+        1200
+      ],
+      "id": "af738358-91ee-4f63-ada1-e1028e38f400",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.concatenated_data }}",
+        "options": {
+          "systemMessage": "=คุณคือผู้ช่วยอัจฉริยะของบริษัท ที่มีหน้าที่ติดตามลูกค้าหลังจากที่มีการสั่งซื้อผลิตภัณฑ์อาหารเสริม หรือสุขภาพไปแล้ว โดยเฉพาะลูกค้าที่มีสถานะ \"ปิดการขาย\"\n\n============================\n📌 หน้าที่ของคุณ:\n\n1. ตรวจสอบสถานะลูกค้า (เช่น `status: ต้องการซื้อ` หรือ `status: ปิดการขาย`)\n2. หากลูกค้าซื้อสินค้าไปแล้ว และมีเวลาผ่านไปพอสมควร (เช่น 5–7 วันขึ้นไป) ให้ส่งข้อความ follow-up สอบถามผลการใช้งาน\n3. พยายามให้ลูกค้ารู้สึกว่าเราใส่ใจ และพร้อมช่วยเหลือเพิ่มเติมหากมีคำถาม\n\n============================\n💬 แนวทางการพูดคุย:\n\n- สุภาพ อ่อนโยน\n- สอบถามอย่างจริงใจ ว่าอาการหรือความรู้สึกหลังใช้ผลิตภัณฑ์เป็นอย่างไร\n- แนะนำให้ปรึกษาเพิ่มเติมหากยังมีอาการหรือข้อสงสัย\n- (ถ้าเหมาะสม) เปิดช่องให้ลูกค้าสั่งซื้อซ้ำ หรือดูผลิตภัณฑ์อื่นที่เกี่ยวข้องในอนาคต\n- การตอบทุกครั้งให้ลงท้ายด้วย \"ครับ\"\n\n============================\n📋 ตัวอย่างการตอบกลับ:\n\n> สวัสดีครับคุณ {{name}} ไม่ทราบว่าอาการหลังทานผลิตภัณฑ์ของเราไปช่วงที่ผ่านมา เป็นอย่างไรบ้างครับ \n> หากมีข้อสงสัย หรือต้องการคำแนะนำเพิ่มเติมเรื่องการดูแลสุขภาพ ฉันยินดีช่วยดูแลต่อนะคะ 😊\n\n> หรือถ้ามีผลลัพธ์ที่ดี เรายินดีมากเลยครับ และหากคุณสนใจดูผลิตภัณฑ์อื่นที่เหมาะสมกับเป้าหมายสุขภาพของคุณ ทางเราสามารถแนะนำเพิ่มเติมได้ครับ\n\n============================\n🛑 ข้อควรระวัง:\n\n- อย่าตอบวันที่แบบระบุวันเพราะวันรับสินค้าหรือการใช้งานของลูกค้าอาจไม่ตรง\n- อย่าถามข้อมูลด้านสุขภาพลึกเกินไป (เว้นแต่ลูกค้าเปิดเผยเอง)\n- ห้ามเสนอสินค้าทันที ควรเน้นการสอบถาม feedback และดูแลก่อน\n- ถ้าลูกค้าระบุว่ามีอาการข้างเคียง หรือไม่พอใจ ต้องแจ้ง admin หรือทีมดูแลทันที\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        2280,
+        1280
+      ],
+      "id": "d56c58c3-b39d-4ffc-90e9-1f3952e74156",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4d93dec8-c4a4-40ca-bc0c-110562365595",
+              "leftValue": "={{ $json.sale_passed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1640,
+        1260
+      ],
+      "id": "dc3ee1f5-1a38-4c88-8658-a2125ec43e54",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ดึงค่า day จาก item ที่มี variable = \"after_sale\"\nconst dayItem = items.find(i => i.json.variable === \"after_sale\");\nconst dayThreshold = dayItem ? dayItem.json.day : 10; // default = 5 ถ้าไม่เจอ\n\nreturn items\n  .filter(item => item.json.date_sale) // เอาเฉพาะที่มี date_sale\n  .map(item => {\n    const dateSaleStr = item.json.date_sale; // เช่น \"19/6/2025\"\n    const [day, month, year] = dateSaleStr.split('/').map(Number);\n    const dateSale = new Date(year, month - 1, day);\n\n    const today = new Date();\n    today.setHours(0,0,0,0);\n    dateSale.setHours(0,0,0,0);\n\n    const diffMs = today - dateSale;\n    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));\n\n    item.json.days_from_sale = diffDays;\n    item.json.sale_passed = diffDays >= dayThreshold; // ใช้ค่า day จาก input\n\n    return item;\n  });\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        1260
+      ],
+      "id": "0a766cbb-e814-4332-9ae4-c9fc1faed73c",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2240,
+        1480
+      ],
+      "id": "143d60fb-579c-4180-b24e-18636414f148",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        1280
+      ],
+      "id": "154b3d92-5fd5-45fa-af7c-831d220e8732",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        2040,
+        1280
+      ],
+      "id": "d3cce5a6-b34d-4b21-ad22-1a9e3e19721b",
+      "name": "Summarize1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.output = item.json.output.replace(/\\[|\\]/g, '');\n}\n\nreturn $input.all();"
+      },
+      "id": "a2226d80-143f-499f-bdbf-34301ae3c743",
+      "name": "Code3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2840,
+        1280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f16d8c5e-a9de-4be1-beb4-3cdb7a1aa3d0",
+              "name": "output",
+              "value": "={{ $json.output.split() }}",
+              "type": "string"
+            },
+            {
+              "id": "22dfb749-246a-45df-8b17-4bb7b82ba299",
+              "name": "userId",
+              "value": "={{ $('If1').item.json.user_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bff5496f-4633-4279-a4f6-27c8be4f854b",
+      "name": "Edit Fields7",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2660,
+        1280
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "58d19271-a525-4c2a-9086-6d67b3b99263",
+              "leftValue": "={{ $json.follow_up }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        680,
+        1280
+      ],
+      "id": "e13e7f31-a8cd-4940-bb84-2f7b7e1ef557",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "58d19271-a525-4c2a-9086-6d67b3b99263",
+              "leftValue": "={{ $json.follow_up }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        580,
+        -180
+      ],
+      "id": "ac5e3f69-7687-437d-8bf3-2c701fa72540",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        2740
+      ],
+      "id": "c6025b42-3198-4f7d-8ac4-6cca5d46bf11",
+      "name": "Schedule Trigger2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "sale",
+              "lookupValue": "ปิดการขาย"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -20,
+        2740
+      ],
+      "id": "6a1cc6e1-c58d-4a99-8f0f-ef398df6722b",
+      "name": "Google Sheets4",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "385dde19-c354-4cbb-91d1-6eedc7dc43e5",
+              "name": "user_id",
+              "value": "={{ $json.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "b2f370ba-aadb-4036-afd3-226bab54c463",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "094831d3-f953-4d99-994d-cc84692919b7",
+              "name": "sale",
+              "value": "={{ $json.sale }}",
+              "type": "string"
+            },
+            {
+              "id": "efdfb41e-3b7c-466f-b79b-c5dc7c7e4d0e",
+              "name": "date_sale",
+              "value": "={{ $json.date_sale }}",
+              "type": "string"
+            },
+            {
+              "id": "a9f17c0c-b70b-405d-b02d-86f63826c2ae",
+              "name": "last_chat",
+              "value": "={{ $json.last_chat }}",
+              "type": "string"
+            },
+            {
+              "id": "f8dbaeb4-861f-4dec-97db-019561390a94",
+              "name": "last_time",
+              "value": "={{ $json.last_time }}",
+              "type": "string"
+            },
+            {
+              "id": "739406db-b650-41c4-8cac-22e6d2eaba5a",
+              "name": "date",
+              "value": "={{ new Date(Date.now()) }}",
+              "type": "string"
+            },
+            {
+              "id": "4b416b2c-8a71-4872-92b4-511999a6efe0",
+              "name": "follow_up",
+              "value": "={{ $json.follow_up }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        180,
+        2740
+      ],
+      "id": "3a385784-b28a-405e-ab6d-8e6667e08de6",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        400,
+        2740
+      ],
+      "id": "458e7c19-7527-40a2-88ac-031905935ba7",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.concatenated_data }}",
+        "options": {
+          "systemMessage": "=คุณคือผู้ช่วยอัจฉริยะของบริษัท ที่มีหน้าที่ติดตามลูกค้าหลังจากที่มีการสั่งซื้อผลิตภัณฑ์อาหารเสริม หรือสุขภาพไปแล้ว โดยเฉพาะลูกค้าที่มีสถานะ \"ปิดการขาย\"\n\n============================\n📌 หน้าที่ของคุณ:\n\n1. ตรวจสอบสถานะลูกค้า:\n   - `status` = ปิดการขาย\n   - มีการติดตามอาการแล้ว (`followed_up = true`)\n   - วันที่ระบบกำหนดว่าผลิตภัณฑ์ใกล้หมด (based on `next_refill_date` หรือ logic จำนวนวัน)\n\n2. หากเข้าตามเงื่อนไข ให้ส่งข้อความแจ้งเตือนลูกค้าเกี่ยวกับผลิตภัณฑ์ที่ใกล้หมด\n\n============================\n💬 แนวทางการพูดคุย:\n\n- ใช้น้ำเสียงเป็นมิตร อ่อนโยน\n- แจ้งว่าเป็นการเตือนความจำเรื่องผลิตภัณฑ์ใกล้หมด\n- กระตุ้นให้ตัดสินใจสั่งซื้อซ้ำอย่างสุภาพ\n- ปิดท้ายด้วย Call to Action ชัดเจน (เช่น “ถ้าต้องการสั่งซื้อ แจ้งฉันได้เลยครับ”)\n- การตอบทุกครั้งให้ลงท้ายด้วย \"ครับ\"\n\n============================\n📋 ตัวอย่างการตอบกลับ:\n\n> สวัสดีครับคุณ {{name}} ไม่ทราบว่าอาการหลังทานผลิตภัณฑ์ของเราไปช่วงที่ผ่านมา เป็นอย่างไรบ้างครับ  \n> หากมีข้อสงสัย หรือต้องการคำแนะนำเพิ่มเติมเรื่องการดูแลสุขภาพ ทางเรายินดีช่วยดูแลต่อครับ 😊\n\n> หรือถ้ามีผลลัพธ์ที่ดี เรายินดีมากเลยคครับ และหากคุณสนใจดูผลิตภัณฑ์อื่นที่เหมาะสมกับเป้าหมายสุขภาพของคุณ ทางเราสามารถแนะนำเพิ่มเติมได้ครับ\n\n============================\n🛑 ข้อควรระวัง:\n\n- อย่าถามข้อมูลด้านสุขภาพลึกเกินไป (เว้นแต่ลูกค้าเปิดเผยเอง)\n- ห้ามเสนอสินค้าทันที ควรเน้นการสอบถาม feedback และดูแลก่อน\n- ถ้าลูกค้าระบุว่ามีอาการข้างเคียง หรือไม่พอใจ ต้องแจ้ง admin หรือทีมดูแลทันที\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        2820
+      ],
+      "id": "a1933aff-7a45-483a-91d6-2771d87fb284",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4d93dec8-c4a4-40ca-bc0c-110562365595",
+              "leftValue": "={{ $json.sale_passed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1760,
+        2800
+      ],
+      "id": "5d24e474-5d0b-4088-93ba-eaa98d78d79f",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ดึงค่า day จาก item ที่มี variable = \"out_of_medicine\"\nconst dayItem = items.find(i => i.json.variable === \"out_of_medicine\");\nconst dayThreshold = dayItem ? dayItem.json.day : 25; // default = 5 ถ้าไม่เจอ\n\nreturn items\n  .filter(item => item.json.date_sale) // เอาเฉพาะที่มี date_sale\n  .map(item => {\n    const dateSaleStr = item.json.date_sale; // เช่น \"19/6/2025\"\n    const [day, month, year] = dateSaleStr.split('/').map(Number);\n    const dateSale = new Date(year, month - 1, day);\n\n    const today = new Date();\n    today.setHours(0,0,0,0);\n    dateSale.setHours(0,0,0,0);\n\n    const diffMs = today - dateSale;\n    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));\n\n    item.json.days_from_sale = diffDays;\n    item.json.sale_passed = diffDays >= dayThreshold; // ใช้ค่า day จาก input\n\n    return item;\n  });\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1580,
+        2800
+      ],
+      "id": "12bb2a34-50e0-4eec-860c-4c1fc3ba9cac",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2360,
+        3020
+      ],
+      "id": "019609ab-ab09-4f4f-a2ae-304703a10cc7",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        2820
+      ],
+      "id": "288d8eba-9c82-4f85-8fbd-ffdd34fd3082",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        2160,
+        2820
+      ],
+      "id": "2afb96a0-fdc1-4ac6-983e-4be86714780c",
+      "name": "Summarize2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.output = item.json.output.replace(/\\[|\\]/g, '');\n}\n\nreturn $input.all();"
+      },
+      "id": "d9688cdf-a78a-45cd-bedb-46faa9b34c28",
+      "name": "Code5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2960,
+        2820
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f16d8c5e-a9de-4be1-beb4-3cdb7a1aa3d0",
+              "name": "output",
+              "value": "={{ $json.output.split() }}",
+              "type": "string"
+            },
+            {
+              "id": "22dfb749-246a-45df-8b17-4bb7b82ba299",
+              "name": "userId",
+              "value": "={{ $('If4').item.json.user_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "98b7bcdc-c044-463c-92d4-036cd22b8136",
+      "name": "Edit Fields9",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2780,
+        2820
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "58d19271-a525-4c2a-9086-6d67b3b99263",
+              "leftValue": "={{ $json.follow_up }}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        2820
+      ],
+      "id": "98fc9c76-991e-4ab5-835b-892ab5f280ca",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/push",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"{{ $json.userId }}\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": {{ $json.output }}\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "id": "a266afd0-d0a2-498c-bef2-62cedf79ae33",
+      "name": "LINE-PUSH-NORMAL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2840,
+        -160
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aD3ETGHgLbXDS9Iy",
+          "name": "Line Boot-X"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/push",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"{{ $json.userId }}\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": {{ $json.output }}\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "500c90f1-2a9e-4163-865a-f9778e18f7da",
+      "name": "LINE-PUSH-AFTER-SALE",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3040,
+        1280
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aD3ETGHgLbXDS9Iy",
+          "name": "Line Boot-X"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/push",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"{{ $json.userId }}\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": {{ $json.output }}\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "id": "2d06b70f-1788-48eb-ada5-d0e7022fd3e4",
+      "name": "LINE-PUSH-RESALE",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3160,
+        2820
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aD3ETGHgLbXDS9Iy",
+          "name": "Line Boot-X"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ng51K8ufOOAcTNV_XXRO7IBHqG-s_g6jz9ZREQJqKrg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "follow_up": "1",
+            "user_id": "={{ $('Edit Fields6').item.json.userId }}"
+          },
+          "matchingColumns": [
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "chat_from",
+              "displayName": "chat_from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "operate",
+              "displayName": "operate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sale",
+              "displayName": "sale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date_sale",
+              "displayName": "date_sale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "last_chat",
+              "displayName": "last_chat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_time",
+              "displayName": "last_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "follow_up",
+              "displayName": "follow_up",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "admin_name",
+              "displayName": "admin_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        3020,
+        -160
+      ],
+      "id": "83d2f9d2-eb41-4a61-8355-5c9f682cd8bd",
+      "name": "UPDATE-FOLLOE-UP",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $('Code3').item.json.userId }}",
+            "follow_up": "1"
+          },
+          "matchingColumns": [
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "chat_from",
+              "displayName": "chat_from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "operate",
+              "displayName": "operate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sale",
+              "displayName": "sale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date_sale",
+              "displayName": "date_sale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_chat",
+              "displayName": "last_chat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_time",
+              "displayName": "last_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "follow_up",
+              "displayName": "follow_up",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "admin_name",
+              "displayName": "admin_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        3240,
+        1280
+      ],
+      "id": "924ff38a-0f68-4d06-828c-abf5c229c8b2",
+      "name": "UPDATE-FOLLOE-UP-AFTER",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ng51K8ufOOAcTNV_XXRO7IBHqG-s_g6jz9ZREQJqKrg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $('Edit Fields9').item.json.userId }}",
+            "follow_up": "2"
+          },
+          "matchingColumns": [
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "chat_from",
+              "displayName": "chat_from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "operate",
+              "displayName": "operate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sale",
+              "displayName": "sale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date_sale",
+              "displayName": "date_sale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "last_chat",
+              "displayName": "last_chat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_time",
+              "displayName": "last_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "follow_up",
+              "displayName": "follow_up",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "admin_name",
+              "displayName": "admin_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        3360,
+        2820
+      ],
+      "id": "054843ff-247a-4a75-af0d-383c83f0ae5d",
+      "name": "UPDATE-FOLLOE-UP-RESALE",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "## การทำงานส่วนของติดตามลูกค้าที่สอบถามหรือสนใจ\n",
+        "width": 360,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2080,
+        -340
+      ],
+      "typeVersion": 1,
+      "id": "88d57d14-0e15-4024-8b15-ffa19e490f54",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## การทำงานส่วนของติดตามหลังการขายซื้อกับลูกค้าที่ซื้อไปแล้ว\n",
+        "width": 280,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2280,
+        1100
+      ],
+      "typeVersion": 1,
+      "id": "2daf01fa-8b12-40a4-980c-acffb096b7c0",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## การทำงานส่วนของติดตามหลังการขายซื้อกับลูกค้าที่ซื้อไปแล้วยาใกล้หมด\n",
+        "height": 140,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2420,
+        2660
+      ],
+      "typeVersion": 1,
+      "id": "6d5f1fa3-26c2-4f96-adaf-9a7c8965b337",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        960,
+        -580
+      ],
+      "id": "4a46e827-db41-466f-b1bb-b48172c93269",
+      "name": "Aggregate3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7ac368f3-2c80-4343-bfc8-109024ebddb4",
+              "leftValue": "={{ $json.inactive }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        -560
+      ],
+      "id": "999dc80b-c1cb-4122-b611-83e487677d14",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "45bf627f-aa06-4314-b4ac-a4dc8dd68580",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        780,
+        -580
+      ],
+      "id": "21d92870-a5b6-4745-8f0c-140178344050",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f92b06a0-1223-4d73-9fc3-58bed49dd6fa",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1180,
+        -580
+      ],
+      "id": "8eec5be9-e439-4806-b82d-3b519c446645",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}",
+        "options": {
+          "systemMessage": "=คุณคือผู้ช่วย AI ที่ออกแบบมาเพื่อสร้างข้อความที่กระชับเป้าหมายหลักของคุณคือการสร้างการแจ้งเตือนที่ชัดเจนสำหรับผู้ดูแลระบบเกี่ยวกับการติดตามลูกค้า\n\nเมื่อได้รับรายชื่อลูกค้าที่ได้ส่งข้อความติดตามไปแล้ว งานของคุณคือ:\n\n1. ยืนยันว่าได้ส่งข้อความติดตามแล้ว\n2. แสดงรายชื่อลูกค้าแต่ละคนในรูปแบบที่อ่านง่าย\n3. ทำให้ข้อความสั้นและกระชับ\n\nรูปแบบข้อมูลที่ป้อนจะเป็น Array ของ Object:\n[\n    {\"name\": \"ชื่อลูกค้า 1\"},\n    {\"name\": \"ชื่อลูกค้า 2\"},\n    ...\n]\n\nตัวอย่างผลลัพธ์:\nถึงแอดมิน,\n\nได้ส่งข้อความติดตามลูกค้าที่มีความสนใจสินค้าเรียบร้อยแล้ว:\n\n- พิสิฐ\n- ณัฐ\n- ลลิตวดี บุญทัน"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        -580
+      ],
+      "id": "4b3a7272-de00-4166-907c-dc98396a13e5",
+      "name": "AI Agent3"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1440,
+        -400
+      ],
+      "id": "f51f6eb4-6dbf-4792-9ff1-564676d3cd7f",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.output = item.json.output.replace(/\\[|\\]/g, '');\n}\n\nreturn $input.all();"
+      },
+      "id": "c8007209-ae0e-4631-8cc5-a47002176082",
+      "name": "Code6",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        -580
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f16d8c5e-a9de-4be1-beb4-3cdb7a1aa3d0",
+              "name": "output",
+              "value": "={{ $json.output.split() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3db047cc-a925-4b50-83d5-a0e2a2b473d6",
+      "name": "Edit Fields10",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1800,
+        -580
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/push",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"Cf0ab1c7a880c1a9da359e5a2d122731d\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": {{ $json.output }}\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "12e58cbb-245e-41fa-bce8-0f152692b367",
+      "name": "LINE-GROUP-Admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2200,
+        -580
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aD3ETGHgLbXDS9Iy",
+          "name": "Line Boot-X"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        860
+      ],
+      "id": "6ec78f7d-d2f6-43ca-8ce0-2eb9c3d0f90c",
+      "name": "Aggregate4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7ac368f3-2c80-4343-bfc8-109024ebddb4",
+              "leftValue": "={{ $json.sale_passed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        760,
+        880
+      ],
+      "id": "46a4578b-99c5-45d2-8e5e-396843be2a81",
+      "name": "If7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "45bf627f-aa06-4314-b4ac-a4dc8dd68580",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1000,
+        860
+      ],
+      "id": "30b147cf-79bf-4597-94bd-fe3bd83fdce7",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f92b06a0-1223-4d73-9fc3-58bed49dd6fa",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1400,
+        860
+      ],
+      "id": "a4aa3314-5fd3-4f52-9fed-cbda1c6b5826",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}",
+        "options": {
+          "systemMessage": "=คุณคือผู้ช่วย AI ที่ออกแบบมาเพื่อสร้างข้อความที่กระชับเป้าหมายหลักของคุณคือการสร้างการแจ้งเตือนที่ชัดเจนสำหรับผู้ดูแลระบบเกี่ยวกับการติดตามลูกค้า\n\nเมื่อได้รับรายชื่อลูกค้าที่ได้ส่งข้อความติดตามไปแล้ว งานของคุณคือ:\n\n1. ยืนยันว่าได้ส่งข้อความติดตามแล้ว\n2. แสดงรายชื่อลูกค้าแต่ละคนในรูปแบบที่อ่านง่าย\n3. ทำให้ข้อความสั้นและกระชับ\n\nรูปแบบข้อมูลที่ป้อนจะเป็น Array ของ Object:\n[\n    {\"name\": \"ชื่อลูกค้า 1\"},\n    {\"name\": \"ชื่อลูกค้า 2\"},\n    ...\n]\n\nตัวอย่างผลลัพธ์:\nถึงแอดมิน,\n\nได้ส่งข้อความติดตามติดตามอาการลูกค้าที่ใช้สินค้าหลังการขายเรียบร้อยแล้ว:\n\n- พิสิฐ\n- ณัฐ\n- ลลิตวดี บุญทัน"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1640,
+        860
+      ],
+      "id": "4516ed5b-a791-4ac9-8524-16ac7dfee378",
+      "name": "AI Agent4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.output = item.json.output.replace(/\\[|\\]/g, '');\n}\n\nreturn $input.all();"
+      },
+      "id": "af5addae-ee56-4123-9986-351a5e4dc755",
+      "name": "Code7",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2220,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f16d8c5e-a9de-4be1-beb4-3cdb7a1aa3d0",
+              "name": "output",
+              "value": "={{ $json.output.split() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "951c5160-aa3f-4468-83b7-b70ff75fb8c5",
+      "name": "Edit Fields11",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2020,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/push",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"Cf0ab1c7a880c1a9da359e5a2d122731d\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": {{ $json.output }}\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "id": "8d1ed95a-36b6-4215-afee-5091c1f9de8d",
+      "name": "LINE-GROUP-Admin1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2420,
+        860
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aD3ETGHgLbXDS9Iy",
+          "name": "Line Boot-X"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1600,
+        1060
+      ],
+      "id": "5ef80452-8da6-4031-ad46-fe9f99bf3d23",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        2360
+      ],
+      "id": "7207e62a-ae09-4586-90f2-1f724efd559c",
+      "name": "Aggregate5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7ac368f3-2c80-4343-bfc8-109024ebddb4",
+              "leftValue": "={{ $json.sale_passed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        740,
+        2380
+      ],
+      "id": "280c5dec-7c0e-459e-9c6d-eaff546fdbf6",
+      "name": "If8"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "45bf627f-aa06-4314-b4ac-a4dc8dd68580",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        980,
+        2360
+      ],
+      "id": "c8fbd718-fdf8-45a5-92b2-10c57d16c59b",
+      "name": "Edit Fields12"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f92b06a0-1223-4d73-9fc3-58bed49dd6fa",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1380,
+        2360
+      ],
+      "id": "03e60a03-ba6f-4c53-baf7-a86cf8180dd6",
+      "name": "Edit Fields13"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}",
+        "options": {
+          "systemMessage": "=คุณคือผู้ช่วย AI ที่ออกแบบมาเพื่อสร้างข้อความที่กระชับเป้าหมายหลักของคุณคือการสร้างการแจ้งเตือนที่ชัดเจนสำหรับผู้ดูแลระบบเกี่ยวกับการติดตามลูกค้า\n\nเมื่อได้รับรายชื่อลูกค้าที่ได้ส่งข้อความติดตามไปแล้ว งานของคุณคือ:\n\n1. ยืนยันว่าได้ส่งข้อความติดตามแล้ว\n2. แสดงรายชื่อลูกค้าแต่ละคนในรูปแบบที่อ่านง่าย\n3. ทำให้ข้อความสั้นและกระชับ\n\nรูปแบบข้อมูลที่ป้อนจะเป็น Array ของ Object:\n[\n    {\"name\": \"ชื่อลูกค้า 1\"},\n    {\"name\": \"ชื่อลูกค้า 2\"},\n    ...\n]\n\nตัวอย่างผลลัพธ์:\nถึงแอดมิน,\n\nได้ส่งข้อความแจ้งเตือนลูกค้าที่สินค้าใกล้หมดเรียบร้อยแล้ว:\n\n- พิสิฐ\n- ณัฐ\n- ลลิตวดี บุญทัน"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1620,
+        2360
+      ],
+      "id": "1644b49d-7780-45bc-91ef-bb992ccb6b7b",
+      "name": "AI Agent5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.output = item.json.output.replace(/\\[|\\]/g, '');\n}\n\nreturn $input.all();"
+      },
+      "id": "099e7722-fc45-4577-8406-b9859cb4b18b",
+      "name": "Code8",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        2360
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f16d8c5e-a9de-4be1-beb4-3cdb7a1aa3d0",
+              "name": "output",
+              "value": "={{ $json.output.split() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b5b41682-29d2-43f9-8eff-014ea7f1c238",
+      "name": "Edit Fields14",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2000,
+        2360
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/push",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"Cf0ab1c7a880c1a9da359e5a2d122731d\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": {{ $json.output }}\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "id": "a20d8411-da72-4fed-a42d-7d04000d3d43",
+      "name": "LINE-GROUP-Admin2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2400,
+        2360
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aD3ETGHgLbXDS9Iy",
+          "name": "Line Boot-X"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1440,
+        2600
+      ],
+      "id": "4d637220-9bc7-49e9-823a-1b4f9f5765bf",
+      "name": "OpenAI Chat Model5",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        2560
+      ],
+      "id": "9b4943f6-8dd0-487b-a7f2-17015cfd0f5a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Jh2jTlBnS9WS3krK",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "50d3b8f0-db1f-452e-a5aa-6d410322717b",
+              "name": "name",
+              "value": "={{ $('Code').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "fc2eb2f7-0b36-447c-b620-d171bab6d61b",
+              "name": "inactive",
+              "value": "={{ $('Code').item.json.inactive }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3180,
+        -160
+      ],
+      "id": "442c9a5f-dc71-40ca-9049-b62f636e03ed",
+      "name": "Edit Fields15"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "50d3b8f0-db1f-452e-a5aa-6d410322717b",
+              "name": "name",
+              "value": "={{ $('Code1').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "db625bfd-ce75-4603-84e9-edab702b4282",
+              "name": "sale_passed",
+              "value": "={{ $('Code1').item.json.sale_passed }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3420,
+        1280
+      ],
+      "id": "df4c81b2-8e14-47b7-8829-fd4fba6492f9",
+      "name": "Edit Fields16"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "50d3b8f0-db1f-452e-a5aa-6d410322717b",
+              "name": "name",
+              "value": "={{ $('Code4').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "db625bfd-ce75-4603-84e9-edab702b4282",
+              "name": "sale_passed",
+              "value": "={{ $('Code4').item.json.sale_passed }}",
+              "type": "boolean"
+            },
+            {
+              "id": "a4990fda-e1ee-4c56-8211-f9ed226c0df2",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3540,
+        2820
+      ],
+      "id": "c5d165ba-b5a6-41bf-8cc8-2f28f4b983a4",
+      "name": "Edit Fields17"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3360,
+        -160
+      ],
+      "id": "595a316b-7b05-4b5c-849e-26af40afe2f8",
+      "name": "Wait",
+      "webhookId": "522534b1-d428-4f67-abc5-a4c36db81d8b"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3600,
+        1280
+      ],
+      "id": "ae51a15b-0d52-4da2-87d3-bc1c3ffe14a6",
+      "name": "Wait1",
+      "webhookId": "c5e0b2f7-00aa-4b15-bf57-3633fec52120"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3700,
+        2820
+      ],
+      "id": "0ac9d9b4-a0f2-4f07-a3fa-57fecf07f1d3",
+      "name": "Wait2",
+      "webhookId": "a1e60884-05bf-4d16-bf48-94dd3da89428"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1060,
+        -180
+      ],
+      "id": "da66a2ad-4388-466a-b4a5-2ba606b69e93",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 649801768,
+          "mode": "list",
+          "cachedResultName": "setting_follow_up",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit#gid=649801768"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "variable",
+              "lookupValue": "befor_sale"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        820,
+        -280
+      ],
+      "id": "706c0298-8c6d-4508-b3ca-8c1f762568a8",
+      "name": "Google Sheets2",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1200,
+        1260
+      ],
+      "id": "0a78e2cd-a760-4b7f-9876-45e2f3f6d7be",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 649801768,
+          "mode": "list",
+          "cachedResultName": "setting_follow_up",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit#gid=649801768"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "variable",
+              "lookupValue": "after_sale"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        980,
+        1140
+      ],
+      "id": "92ea2bcd-545f-4b14-abc9-31d52f811d7b",
+      "name": "Google Sheets3",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1280,
+        2800
+      ],
+      "id": "c284d83a-e127-43c0-803f-107cef4bcbb0",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 649801768,
+          "mode": "list",
+          "cachedResultName": "setting_follow_up",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit#gid=649801768"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "variable",
+              "lookupValue": "out_of_medicine"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1000,
+        2700
+      ],
+      "id": "c5be5700-9e75-4698-b665-ed7c811d44aa",
+      "name": "Google Sheets5",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "LINE-PUSH-NORMAL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Summarize1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "LINE-PUSH-AFTER-SALE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "Summarize2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "LINE-PUSH-RESALE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields9": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LINE-PUSH-NORMAL": {
+      "main": [
+        [
+          {
+            "node": "UPDATE-FOLLOE-UP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LINE-PUSH-AFTER-SALE": {
+      "main": [
+        [
+          {
+            "node": "UPDATE-FOLLOE-UP-AFTER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LINE-PUSH-RESALE": {
+      "main": [
+        [
+          {
+            "node": "UPDATE-FOLLOE-UP-RESALE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UPDATE-FOLLOE-UP": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UPDATE-FOLLOE-UP-AFTER": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UPDATE-FOLLOE-UP-RESALE": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "LINE-GROUP-Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields10": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Aggregate4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code7": {
+      "main": [
+        [
+          {
+            "node": "LINE-GROUP-Admin1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields11": {
+      "main": [
+        [
+          {
+            "node": "Code7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If8": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields12": {
+      "main": [
+        [
+          {
+            "node": "Aggregate5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields13": {
+      "main": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code8": {
+      "main": [
+        [
+          {
+            "node": "LINE-GROUP-Admin2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields14": {
+      "main": [
+        [
+          {
+            "node": "Code8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model5": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields15": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields16": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields17": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets5": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7a656053-bbab-4dcb-8be7-4942722b527e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6f5dcd4ffe573318f7e66827ae7890c40da58a2bf57a9295e74d2423fda39691"
+  },
+  "id": "5egScsuY0wcqrTKN",
+  "tags": []
+}

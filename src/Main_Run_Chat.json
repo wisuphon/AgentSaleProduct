@@ -1,0 +1,3023 @@
+{
+  "name": "Main_Run_Chat",
+  "nodes": [
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "path": "prima-agent",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -6740,
+        -200
+      ],
+      "id": "1dd75023-1ec5-4691-af75-eb3a861a4881",
+      "name": "Webhook",
+      "webhookId": "482ad41c-63c6-4667-9bcc-5006aabc5c5d"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fbfdf03c-83f5-4154-89cd-379cd07512a2",
+              "name": "userId",
+              "value": "={{ $('Edit Fields3').item.json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "0192eec5-9fbd-454d-b741-18be37fd136c",
+              "name": "replyTokent",
+              "value": "={{ $('Edit Fields3').item.json.replyTokent }}",
+              "type": "string"
+            },
+            {
+              "id": "261a3269-c14d-4c92-b825-2df415a964a0",
+              "name": "chatInput",
+              "value": "={{ $('Edit Fields3').item.json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "9db6cd33-56f9-4c81-bd89-181df345473c",
+              "name": "userAgent",
+              "value": "={{ $('Edit Fields3').item.json.userAgent }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4680,
+        -200
+      ],
+      "id": "716a1b7c-a5a1-42cb-a2fc-a500c26386da",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query[\"hub.challenge\"] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        -6760,
+        -360
+      ],
+      "id": "747111b0-ffbf-4a84-a03f-99832d8a8877",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9a9a245e-f1a1-4282-bb02-a81ffe629f0f",
+              "name": "userId",
+              "value": "={{ $json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "79c571b0-1bcc-4a29-a333-ff9b189c7e37",
+              "name": "replyTokent",
+              "value": "={{ $json.replyTokent }}",
+              "type": "string"
+            },
+            {
+              "id": "b1d6876e-b60d-4a72-b191-d3eefc330e96",
+              "name": "chatInput",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "c7b91fc5-0c70-435f-880e-1eefdc71987e",
+              "name": "userAgent",
+              "value": "={{ $json.userAgent }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1b8798d9-a9a0-42a8-9c2d-d5a4e63da615",
+      "name": "chat_input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3580,
+        -220
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "18b78733-2dea-4dd8-b54d-fe67d6fdfa98",
+              "leftValue": "={{ $json.headers['user-agent'] }}",
+              "rightValue": "Line",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "5d40806e-5ab9-42c6-a4d6-7323320b6267",
+              "leftValue": "={{ $json.body.events[0].source.type }}",
+              "rightValue": "user",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -6260,
+        -240
+      ],
+      "id": "3b1ebb00-178b-41cc-b9d4-740223822b6e",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9a9a245e-f1a1-4282-bb02-a81ffe629f0f",
+              "name": "userId",
+              "value": "={{ $json.body.events[0].source.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "79c571b0-1bcc-4a29-a333-ff9b189c7e37",
+              "name": "replyTokent",
+              "value": "={{ $json.body.events[0].replyToken }}",
+              "type": "string"
+            },
+            {
+              "id": "b1d6876e-b60d-4a72-b191-d3eefc330e96",
+              "name": "chatInput",
+              "value": "={{ $json.body.events[0].message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "c7b91fc5-0c70-435f-880e-1eefdc71987e",
+              "name": "userAgent",
+              "value": "=Line",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2ef9be33-721f-4a2e-a73d-5d247602faa8",
+      "name": "chat_filter_line",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -6000,
+        -280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9a9a245e-f1a1-4282-bb02-a81ffe629f0f",
+              "name": "userId",
+              "value": "={{ $json.body.entry[0].messaging[0].sender.id }}",
+              "type": "string"
+            },
+            {
+              "id": "79c571b0-1bcc-4a29-a333-ff9b189c7e37",
+              "name": "replyTokent",
+              "value": "={{ $json.body.entry[0].messaging[0].recipient.id }}",
+              "type": "string"
+            },
+            {
+              "id": "b1d6876e-b60d-4a72-b191-d3eefc330e96",
+              "name": "chatInput",
+              "value": "={{ $json.body.entry[0].messaging[0].message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "c7b91fc5-0c70-435f-880e-1eefdc71987e",
+              "name": "userAgent",
+              "value": "=Facebook",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b0898cf2-d950-4a1e-a4ff-a28d02b0a847",
+      "name": "chat_filter_facebook",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -6000,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e32da254-6093-4d4f-8ea1-d9b6241e29d0",
+              "leftValue": "={{ $('Edit Fields3').item.json.userId }}",
+              "rightValue": "={{ $json.user_id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -5300,
+        -180
+      ],
+      "id": "71972aa5-9445-4b06-bd03-249d8f9a3a5d",
+      "name": "If2",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9e066858-7880-4089-b905-fce4e9720170",
+              "name": "name",
+              "value": "={{ $json.first_name }}  {{ $json.last_name }}",
+              "type": "string"
+            },
+            {
+              "id": "38cba3e4-6db6-43ad-a8b1-e5c261002668",
+              "name": "userId",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "b131119d-7016-4aeb-ac8d-ce225ce34744",
+              "name": "userAgent",
+              "value": "={{ $('chat_filter_facebook').item.json.userAgent }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4500,
+        200
+      ],
+      "id": "69bd30cd-7778-47cb-b5ee-db4a51a7b997",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "83bfb172-0444-4791-a97b-e6bb44b2507c",
+              "name": "userId",
+              "value": "={{ $('Edit Fields3').item.json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "f8ad000f-35e2-4325-a9e9-97936cea0a79",
+              "name": "replyTokent",
+              "value": "={{ $('Edit Fields3').item.json.replyTokent }}",
+              "type": "string"
+            },
+            {
+              "id": "77245ee4-ecf8-4c0c-9cc7-443dde6c9aa7",
+              "name": "chatInput",
+              "value": "={{ $('Edit Fields3').item.json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "6f4958d9-1436-4af0-a2e8-a8f02d73b569",
+              "name": "userAgent",
+              "value": "={{ $('Edit Fields3').item.json.userAgent }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3980,
+        100
+      ],
+      "id": "5f0bc68b-c08b-405f-ab26-4477351d0be4",
+      "name": "caht_from_face"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('chat_filter_line').item.json.userAgent }}",
+                    "rightValue": "Line",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "7bd54cee-2884-467c-885e-bed4ddc5f59a"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ca0d3e56-a41c-477e-88c8-c6b2e6e32c6f",
+                    "leftValue": "={{ $('chat_filter_line').item.json.userAgent }}",
+                    "rightValue": "Facebook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -4900,
+        80
+      ],
+      "id": "8e4b9f0b-fac8-4139-8b7f-aaead932f0ac",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ab8be01e-5959-42b5-a6b5-0c9b234ed42e",
+              "name": "user_id",
+              "value": "={{ $json.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "87ead58b-6614-4a7d-8512-8723f7ecd7b7",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "8238cca7-3a71-48e8-b0c6-5b652f34c420",
+              "name": "chat_from",
+              "value": "={{ $json.chat_from }}",
+              "type": "string"
+            },
+            {
+              "id": "a2b5ab3a-2b2f-4846-9151-a0c3a4c612d8",
+              "name": "operate",
+              "value": "={{ $json.operate }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -5460,
+        -180
+      ],
+      "id": "b5bdbfd1-589e-4404-9388-6d8edb5206e9",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bbb65d74-a884-4ae7-b1e7-8b9197dc3ecd",
+              "name": "userId",
+              "value": "={{ $json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "52bf9fa1-8eb3-4eb6-a13d-64a2faadb07d",
+              "name": "replyTokent",
+              "value": "={{ $json.replyTokent }}",
+              "type": "string"
+            },
+            {
+              "id": "e8bdc6eb-65ed-4fd2-8a1d-a9de13c3294b",
+              "name": "chatInput",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "46a350f0-786f-43d0-b0c0-c26b798fe74c",
+              "name": "userAgent",
+              "value": "={{ $json.userAgent }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -5820,
+        -180
+      ],
+      "id": "65f0a193-feee-44ec-852b-2fdc322ce352",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "361d4e40-f1db-46bd-a68d-6807c0f87507",
+              "name": "name",
+              "value": "={{ $json.displayName }}",
+              "type": "string"
+            },
+            {
+              "id": "8a7c5c16-1f67-48cf-b225-c8067f11cfc0",
+              "name": "userId",
+              "value": "={{ $json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "fb2f37fe-a031-499c-8830-d4a77d0ad316",
+              "name": "userAgent",
+              "value": "={{ $('Edit Fields3').item.json.userAgent }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4500,
+        -20
+      ],
+      "id": "13448127-e60a-46d9-a313-732694cab006",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05d2af36-7c8a-4e14-b7e7-65f386762d3a",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "ba248be0-f15c-4b06-9d2b-279784506034",
+              "name": "userId",
+              "value": "={{ $json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "8ccc8cdb-e7e2-4efa-86a6-0f8e1a8276dc",
+              "name": "userAgent",
+              "value": "={{ $json.userAgent }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4320,
+        100
+      ],
+      "id": "aa1daf3b-377f-4bc6-b30d-bb6494c52998",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "me",
+        "edge": "messages",
+        "options": {
+          "queryParametersJson": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Switch').item.json.userId }}\"\n  },\n  \"message\": {\n    \"text\": {{ $('Switch').item.json.output }}\n  }\n}\n"
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        -100
+      ],
+      "id": "c97b2ef7-ffe8-4cbc-b237-6fc063b50106",
+      "name": "Response Facebook Graph API",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "vowXfTFdz4dqjCvy",
+          "name": "NKS Facebook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.output = item.json.output.replace(/\\[|\\]/g, '');\n}\n\nreturn $input.all();"
+      },
+      "id": "4a3f4bfa-8db7-49b7-899b-b02042adbee9",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1220,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "id": "5fb2265f-aeda-44cc-9aac-c556e4079bfa",
+      "name": "text-embeddings-3-large1",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        -1740,
+        240
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=คุณคือผู้ช่วยอัจฉริยะของบริษัท ที่เชี่ยวชาญในการให้คำปรึกษาเรื่องสุขภาพ โรคภัย และการแนะนำผลิตภัณฑ์อาหารเสริมของบริษัท เป้าหมายของคุณคือ:\n\n1. ให้คำแนะนำด้านสุขภาพที่ถูกต้อง แม่นยำ\n2. ตอบคำถามที่เกี่ยวข้องกับสินค้าอย่างชัดเจน\n\n=============================================\n🔍 ลำดับการค้นหาข้อมูล (ใช้เครื่องมือผ่าน prima_agent เท่านั้น):\n1. สำหรับคำถามทุกประเภท (สุขภาพทั่วไป, โรคภัย, สินค้า): ให้ค้นหาข้อมูลจาก \"prima_FAQ\" เป็นลำดับแรกสุดเสมอ\n2. หากไม่พบคำตอบใน \"prima_FAQ\":\n- ถ้าเป็นคำถามด้านสุขภาพหรือความรู้ทั่วไป: ให้ค้นหาข้อมูลเพิ่มเติมจาก \"prima_knowledge\"\n- ถ้าเป็นคำถามที่เจาะจงเกี่ยวกับสินค้า หรือมีคำว่า “Boot X” ปรากฏ: ให้ค้นหาข้อมูลจาก \"prima_product\"\n\nสำคัญ: ต้องดำเนินการค้นหาตามลำดับนี้อย่างเคร่งครัด ห้ามข้ามขั้นตอน\n\n=============================================\n📌 แนวทางการตอบกลับ:\n1. อธิบายข้อมูลอย่างกระชับ ชัดเจน\n- ใช้ภาษาที่เข้าใจง่าย\n- จัดรูปแบบข้อความให้เหมาะสมกับการอ่านบนมือถือ (เว้นวรรค, ขึ้นบรรทัดใหม่เมื่อจบบริบท, แบ่งย่อหน้า)\n2. หากไม่พบข้อมูลใน resource ทั้ง 3 ที่กำหนด:\n- ถ้าเป็นเรื่องสุขภาพ: คุณสามารถค้นจากภายนอกได้\n- ถ้าไม่มีข้อมูลเลย: ให้ตอบว่า ❝ฉันไม่พบคำตอบในองค์ความรู้ที่มี❞ และห้ามสร้างคำตอบจากโมเดลเอง\n3. การตอบทุกครั้งให้ลงท้ายด้วย \"ครับ\"\n\n=============================================\n📌 โฟกัสและความเกี่ยวข้อง:\n- ตรวจสอบให้แน่ใจว่าคำตอบทุกคำ อ้างอิงจากข้อมูลจริง ไม่พึ่งพาความรู้ทั่วไปของโมเดล\n- ให้ความสำคัญกับการอ่านง่ายบนแพลตฟอร์มแชท เช่น Line และ Facebook เป็นอันดับแรก"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        -2080,
+        -180
+      ],
+      "id": "e7dcd7fa-8651-4341-9c28-4ee65b7a68da",
+      "name": "AI Agent1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.userId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -2040,
+        120
+      ],
+      "id": "3e9f548b-daac-462d-8532-12095303d551",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "content": "## AI แชท หลัก",
+        "height": 100
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2080,
+        -300
+      ],
+      "typeVersion": 1,
+      "id": "e971d6e8-56b1-4902-bb81-daad5ce0b1e3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "id": "bd57c5dc-d8de-4603-a854-a168ca97ed7d",
+      "name": "text-embeddings-3-large3",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        -1440,
+        240
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "prima_FAQ",
+        "toolDescription": "Retrieve Document FAQ",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "prima_FAQ",
+          "mode": "list",
+          "cachedResultName": "prima_FAQ"
+        },
+        "includeDocumentMetadata": false,
+        "options": {}
+      },
+      "id": "6ebd74e4-b761-4dd0-b726-c32cba33dffa",
+      "name": "FAQ",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "position": [
+        -1540,
+        80
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "qdrantApi": {
+          "id": "sHXJobx5femWVLQF",
+          "name": "Prima-Qdrant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "prima_doc",
+        "toolDescription": "Retrieve Document Healthy Knowledge",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "prima_knowledge",
+          "mode": "list",
+          "cachedResultName": "prima_knowledge"
+        },
+        "topK": 10,
+        "options": {}
+      },
+      "id": "21c4e6b5-f0cb-46ed-a30b-4fb8789c4421",
+      "name": "Doc",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "position": [
+        -1840,
+        80
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "qdrantApi": {
+          "id": "sHXJobx5femWVLQF",
+          "name": "Prima-Qdrant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "id": "36f6c632-dc32-4efc-a7bb-0ae5d44cde78",
+      "name": "text-embeddings-3-large4",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        -1140,
+        240
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "prima_product",
+        "toolDescription": "Retrieve Document Product",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "prima_product",
+          "mode": "list",
+          "cachedResultName": "prima_product"
+        },
+        "topK": 10,
+        "includeDocumentMetadata": false,
+        "options": {}
+      },
+      "id": "2db8c2c5-fea1-4370-996a-ce9accee198c",
+      "name": "product",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "position": [
+        -1240,
+        80
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "qdrantApi": {
+          "id": "sHXJobx5femWVLQF",
+          "name": "Prima-Qdrant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f16d8c5e-a9de-4be1-beb4-3cdb7a1aa3d0",
+              "name": "output",
+              "value": "={{ $json.output.split() }}",
+              "type": "string"
+            },
+            {
+              "id": "60243729-e0e4-44d0-81ed-76856bbba6b0",
+              "name": "replyTokent",
+              "value": "={{ $('chat_input').item.json.replyTokent }}",
+              "type": "string"
+            },
+            {
+              "id": "cfc20797-1f52-452a-89aa-7c7027a5d2a0",
+              "name": "userAgent",
+              "value": "={{ $('chat_input').item.json.userAgent }}",
+              "type": "string"
+            },
+            {
+              "id": "364d1480-2d7c-4412-aefe-f3395bdcb1db",
+              "name": "chatInput",
+              "value": "={{ $('chat_input').item.json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "22dfb749-246a-45df-8b17-4bb7b82ba299",
+              "name": "userId",
+              "value": "={{ $('chat_input').item.json.userId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "485fdb8e-cfdd-46d1-a84c-5c64bbe6bd32",
+      "name": "Edit Fields6",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1380,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "id": "4ea11b03-cd0c-4f2b-8e3e-819195784365",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -2220,
+        80
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.userAgent }}",
+                    "rightValue": "Line",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "1664dae2-acd0-477a-a113-b5e799ba7548"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a27d919a-a12d-4a4c-8596-c0a2630db8aa",
+                    "leftValue": "={{ $json.userAgent }}",
+                    "rightValue": "Facebook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1060,
+        -180
+      ],
+      "id": "9a4b8323-1660-4472-b7f9-2c6dd1ac6710",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "me",
+        "edge": "messages",
+        "options": {
+          "queryParametersJson": "={\n  \"recipient\": {\n    \"id\": \"{{ $json.userId }}\"\n  },\n  \"sender_action\": \"typing_on\"\n}\n"
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        -820,
+        -100
+      ],
+      "id": "9c0ea129-24ea-4bcb-8e01-5850f51f69fa",
+      "name": "Typing Facebook Graph API1",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "vowXfTFdz4dqjCvy",
+          "name": "NKS Facebook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "03604860-f012-474f-9a71-4fb3a4affe41",
+              "name": "userAgent",
+              "value": "={{ $('Edit Fields6').item.json.userAgent }}",
+              "type": "string"
+            },
+            {
+              "id": "ce4a10e7-8319-4c7e-b489-de81a4cae1d5",
+              "name": "userId",
+              "value": "={{ $('Edit Fields6').item.json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "8484fe47-52dc-4060-9e31-16ea3babacc6",
+              "name": "name",
+              "value": "={{ $('Edit Fields2').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "a08f1300-5892-4de2-9f90-b8844cc7f096",
+              "name": "chatInput",
+              "value": "={{ $('Edit Fields6').item.json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "039b8c21-edb8-44f2-9054-aa090daef036",
+              "name": "answer",
+              "value": "={{ $('Edit Fields6').item.json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -180,
+        -200
+      ],
+      "id": "fe1e5db0-220a-4de2-8405-5801534ac029",
+      "name": "Edit Fields7"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=คุณคือผู้ช่วยอัจฉริยะสำหรับงานวิเคราะห์ความสนใจของลูกค้าเกี่ยวกับผลิตภัณฑ์ด้านสุขภาพและอาหารเสริม โดยมีหน้าที่หลัก 2 ส่วน:\n\n============================\n📌 ส่วนที่ 1: วิเคราะห์ความสนใจของลูกค้า (Customer Intent Detection)\n\n1. วิเคราะห์บทสนทนาล่าสุดของลูกค้าเพื่อระบุเจตนา (intent) และจำแนกสถานะความสนใจเป็น **เพียงหนึ่งใน 3 หมวดนี้เท่านั้น**:\n\n   - `สอบถาม` → ถามข้อมูลทั่วไป เช่น สรรพคุณ, วิธีใช้, ความแตกต่างของผลิตภัณฑ์ ฯลฯ  \n   - `สนใจ` → แสดงความสนใจ, ถามว่ามีจำหน่ายไหม, ขอรายละเอียดเพื่อเปรียบเทียบ/ตัดสินใจ  \n   - `ต้องการซื้อ` → แสดงความต้องการสั่งซื้อ, สอบถามราคา, ช่องทางการซื้อ หรือแจ้งว่าพร้อมซื้อทันที  \n\n⚠️ **ห้ามใช้หมวดอื่นนอกเหนือจากนี้**  \n⚠️ **ห้ามคาดเดาหรือสรุปแทนลูกค้า** หากไม่มีข้อมูลเพียงพอ → ให้เลือก `สอบถาม`\n\n2. เมื่อวิเคราะห์ได้แล้ว ให้ตอบกลับเป็น String ที่ระบุสถานะความสนใจเท่านั้น เช่น \"สอบถาม\", \"สนใจ\", หรือ \"ต้องการซื้อ\"\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        20,
+        -200
+      ],
+      "id": "fc869b91-2b09-48b2-9ae2-b30206b74f60",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        60
+      ],
+      "id": "d157db67-a9c7-401e-abad-7c01c3771c3a",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.userId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        120,
+        40
+      ],
+      "id": "d07e3b97-243d-4f01-9354-008235367932",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -660,
+        -300
+      ],
+      "id": "6573a203-bb47-445e-a5cb-6e0cb14d322a",
+      "name": "Wait",
+      "webhookId": "49bddfd5-2e6c-4291-a4fc-3c90749b76e5"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -660,
+        -100
+      ],
+      "id": "57875a02-aacf-43f3-8efc-ed52fae6396a",
+      "name": "Wait1",
+      "webhookId": "14553cb0-1042-4e30-ba92-7227512918c7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b810799f-662b-4980-8684-679ff4e6c8a6",
+              "name": "intent",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        360,
+        -200
+      ],
+      "id": "306a0ad2-6e7f-4dd2-9a42-b2309180d6d6",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ee14b8de-c1f2-440f-a629-f968b21e7123",
+              "leftValue": "={{ $('Edit Fields8').item.json.intent }}",
+              "rightValue": "ต้องการซื้อ",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        820,
+        -60
+      ],
+      "id": "b4f78364-990b-46cb-bf9f-58b1b421c33b",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "sendTo": "wisuphon@gmail.com",
+        "subject": "ลูกค้าสนใจสินค้าโปรดติดต่อกลับ",
+        "message": "=ติดต่อลูกค้าชื่อ {{ $('Edit Fields7').item.json.name }} ผ่าน {{ $('Edit Fields7').item.json.userAgent }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1220,
+        320
+      ],
+      "id": "ef5b10f0-b506-4ee6-8bda-b7af478d1c47",
+      "name": "Gmail1",
+      "webhookId": "511351dd-d602-426f-9381-124a9b22eb5c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QsD4ve3K3xLF6Uv5",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "ส่งแจ้งเตือนไปที่ Sale\nid: Cf0ab1c7a880c1a9da359e5a2d122731d",
+        "height": 120
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1220,
+        -40
+      ],
+      "typeVersion": 1,
+      "id": "1147d5a1-5623-4371-a8e3-ad76580fcf74",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/chat/loading/start",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"chatId\": \"{{ $json.userId }}\",\n    \"loadingSeconds\": 5\n} ",
+        "options": {}
+      },
+      "id": "3a94f51b-3206-4be9-8086-5da3a0ef1b86",
+      "name": "LINE-LOADING",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -820,
+        -300
+      ],
+      "retryOnFail": true,
+      "alwaysOutputData": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aD3ETGHgLbXDS9Iy",
+          "name": "Line Boot-X"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"replyToken\":\"{{ $('Switch').item.json.replyTokent }}\",\n    \"messages\":[\n        {\n            \"type\":\"text\",\n            \"text\":{{ $('Switch').item.json.output }}\n        }\n    ]\n} ",
+        "options": {}
+      },
+      "id": "ecbc0690-cec2-44af-aeb4-12999ba7c1b8",
+      "name": "LINE-RESPONSE",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -500,
+        -300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aD3ETGHgLbXDS9Iy",
+          "name": "Line Boot-X"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1htcNRwHgnHGM30QU47Wk-FJtceUFnHA63nYjpkE15oQ",
+          "mode": "list",
+          "cachedResultName": "Agent Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1htcNRwHgnHGM30QU47Wk-FJtceUFnHA63nYjpkE15oQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Logs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qcDkP4DhW82xkkv8zvjYZeQxPLbc4DLBhd9s5KUjgo0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ new Date(Date.now() + (7 * 60 * 60 * 1000)).toISOString().replace('T', ' ').slice(0, 19) }}",
+            "from": "={{ $('Edit Fields7').item.json.userAgent }}",
+            "user_id": "={{ $('Edit Fields7').item.json.userId }}",
+            "name": "={{ $('Edit Fields7').item.json.name }}",
+            "chat_input": "={{ $('Edit Fields7').item.json.chatInput }}",
+            "answer": "={{ $('Edit Fields7').item.json.answer }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "chat_input",
+              "displayName": "chat_input",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "answer",
+              "displayName": "answer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        800,
+        -300
+      ],
+      "id": "3ceef72c-2e27-4cc2-b197-bd87065bbffa",
+      "name": "Logs Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ng51K8ufOOAcTNV_XXRO7IBHqG-s_g6jz9ZREQJqKrg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $('Edit Fields7').item.json.userId }}",
+            "chat_from": "={{ $('Edit Fields7').item.json.userAgent }}",
+            "status": "={{ $json.intent }}",
+            "last_chat": "={{ $('Edit Fields7').item.json.chatInput }}",
+            "last_time": "={{ new Date(Date.now() + (7 * 60 * 60 * 1000)).toISOString().replace('T', ' ').slice(0, 19) }}"
+          },
+          "matchingColumns": [
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "chat_from",
+              "displayName": "chat_from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "operate",
+              "displayName": "operate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sale",
+              "displayName": "sale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date_sale",
+              "displayName": "date_sale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "last_chat",
+              "displayName": "last_chat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_time",
+              "displayName": "last_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "follow_up",
+              "displayName": "follow_up",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "admin_name",
+              "displayName": "admin_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        580,
+        -200
+      ],
+      "id": "b8dc5093-0b0e-4098-9f5f-509bbb6a8b6a",
+      "name": "Update Chat",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ng51K8ufOOAcTNV_XXRO7IBHqG-s_g6jz9ZREQJqKrg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $json.name }}",
+            "chat_from": "={{ $json.userAgent }}",
+            "user_id": "={{ $json.userId }}",
+            "operate": "agent"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_from",
+              "displayName": "chat_from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "operate",
+              "displayName": "operate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sale",
+              "displayName": "sale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date_sale",
+              "displayName": "date_sale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "last_chat",
+              "displayName": "last_chat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_time",
+              "displayName": "last_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "follow_up",
+              "displayName": "follow_up",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin_name",
+              "displayName": "admin_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -4140,
+        100
+      ],
+      "id": "e432a7e5-cdbc-4bc7-a239-8a2053ed98d8",
+      "name": "Add Users",
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw",
+          "mode": "list",
+          "cachedResultName": "Prima Sale Track",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RiRcYCrqQ0NNORYIJT48XpllPHfG4f2Hl8Uo8_aCIjw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ng51K8ufOOAcTNV_XXRO7IBHqG-s_g6jz9ZREQJqKrg/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "user_id",
+              "lookupValue": "={{ $json.userId }}"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -5620,
+        -180
+      ],
+      "id": "49f8af46-370c-4c84-95b3-997da4b3344d",
+      "name": "Verify User",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YU6nKLIxyxNLlyCO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.line.me/v2/bot/profile/{{ $('Edit Fields3').item.json.userId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4680,
+        -20
+      ],
+      "id": "2c28bbea-0bef-461f-ba32-d861aa4e32b6",
+      "name": "Get Profile Line",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aD3ETGHgLbXDS9Iy",
+          "name": "Line Boot-X"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "graphApiVersion": "v22.0",
+        "node": "={{ $('If').item.json.body.entry[0].messaging[0].sender.id }}",
+        "options": {
+          "fields": {
+            "field": [
+              {
+                "name": "first_name"
+              },
+              {
+                "name": "last_name"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        -4680,
+        200
+      ],
+      "id": "fbd1c5d2-d02a-43cb-b9d5-a140c8c70def",
+      "name": "Get Profile Facebook",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "vowXfTFdz4dqjCvy",
+          "name": "NKS Facebook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.headers['user-agent'] }}",
+                    "rightValue": "Line",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "9d42f0ca-edc9-406f-872b-018794884df3"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1d493241-191f-4123-8573-6c619d06bf98",
+                    "leftValue": "={{ $json.headers['user-agent'] }}",
+                    "rightValue": "facebook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -6480,
+        -180
+      ],
+      "id": "1f183aa6-46e7-4032-b325-13ae08f7a317",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/push",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"Cf0ab1c7a880c1a9da359e5a2d122731d\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"ติดต่อลูกค้าชื่อ {{ $('Edit Fields7').item.json.name }} ผ่าน {{ $('Edit Fields7').item.json.userAgent }}\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "id": "3998575e-c56c-4808-acf3-efc36507e1d3",
+      "name": "LINE-GROUP-Admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1220,
+        120
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aD3ETGHgLbXDS9Iy",
+          "name": "Line Boot-X"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "id": "a6870d5b-b833-4dde-869e-a4240a2175cf",
+      "name": "text-embeddings-3-large",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        -1540,
+        -560
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "prima_product_review",
+        "toolDescription": "Retrieve Document Product Review",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "prima_product_review",
+          "mode": "list",
+          "cachedResultName": "prima_product_review"
+        },
+        "topK": 2,
+        "options": {}
+      },
+      "id": "11ea86ec-5a27-4242-8c94-814a14c12f2e",
+      "name": "review",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "position": [
+        -1640,
+        -700
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "qdrantApi": {
+          "id": "sHXJobx5femWVLQF",
+          "name": "Prima-Qdrant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.chatInput }}"
+            },
+            {
+              "content": "=คุณคือผู้ช่วยอัจฉริยะของบริษัท ที่เชี่ยวชาญในการให้คำปรึกษาเรื่องสุขภาพ โรคภัย และการแนะนำผลิตภัณฑ์อาหารเสริมของบริษัท เป้าหมายของคุณคือ:\n\n1. จำแนกประเภทของคำถามลูกค้าได้อย่างแม่นยำ.\n2. ให้คำแนะนำด้านสุขภาพที่ถูกต้อง แม่นยำ.\n3. ตอบคำถามที่เกี่ยวข้องกับสินค้าและการซื้อขายอย่างชัดเจน.\n4. ส่งต่อคำถามไปยัง AI Agent ผู้เชี่ยวชาญด้านรีวิว เมื่อจำเป็น.\n\nตัวเลือกที่ต้องตอบ\n1. 'normal'\n2. 'review'\n\nให้ตอบแค่ 2 ตัวเลือกนี้เท่านั้น",
+              "role": "system"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -3280,
+        -220
+      ],
+      "id": "7bb13094-111f-4d8d-97ce-cc8d151660fe",
+      "name": "OpenAI",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "58c2f65b-484d-4686-a92d-998b2a457fb3",
+              "leftValue": "={{ $json.message.content.response }}",
+              "rightValue": "review",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2940,
+        -220
+      ],
+      "id": "9b326045-f566-475b-b023-09dfd4490b32",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=คุณคือผู้เชี่ยวชาญด้านการค้นหารีวิวสินค้า มีหน้าที่หลักในการค้นหาข้อมูลรีวิวจากคลังข้อมูลรีวิว และส่งคืนรีวิวที่เกี่ยวข้องมากที่สุดเท่านั้น\n\n🔍 **ลำดับการค้นหาข้อมูล (ใช้เครื่องมือผ่าน `prima_product_reviews` เท่านั้น):**\n1.  สำหรับคำถามเกี่ยวกับรีวิวสินค้า ให้ค้นหาข้อมูลจาก `\"prima_product_reviews\"` เป็นลำดับแรกสุดเสมอ\n\n📌 **แนวทางการตอบกลับ:**\n1. อธิบายข้อมูลอย่างกระชับ ชัดเจน:\n- ใช้ภาษาที่เข้าใจง่าย.\n- จัดรูปแบบข้อความให้เหมาะสมกับการอ่านบนมือถือ (เว้นวรรค, ขึ้นบรรทัดใหม่เมื่อจบบริบท, แบ่งย่อหน้า).\n- หากเรียกใช้ search_review และได้รับข้อมูลรีวิวพร้อมลิงก์รูปภาพกลับมา:\n- ให้วิเคราะห์และสรุป review_text ที่ได้รับมา ผสมผสานกับบริบทจากประวัติการสนทนา (ถ้ามี) เพื่อสร้างคำอธิบายรีวิวที่กระชับและเข้าใจง่าย.\n- ตามด้วยการส่งรูปภาพโดยใช้ original_image_url และ preview_image_url.\n2. หากไม่พบข้อมูลในแหล่งข้อมูลที่กำหนด และไม่สามารถเรียกใช้เครื่องมือที่เกี่ยวข้องได้ (เช่น Agent รีวิวไม่มีข้อมูล):\n- ถ้าเป็นเรื่องสุขภาพทั่วไป: คุณสามารถค้นจากภายนอกได้.\n- ถ้าไม่มีข้อมูลเลย: ให้ตอบว่า ❝ฉันไม่พบคำตอบในองค์ความรู้ที่มีครับ❞ และห้ามสร้างคำตอบจากโมเดลเองเด็ดขาด.\n\n3. การตอบทุกครั้งให้ลงท้ายด้วย \"ครับ\" เสมอ.\n\n📌 โฟกัสและความเกี่ยวข้อง:\n- ตรวจสอบให้แน่ใจว่าคำตอบทุกคำ อ้างอิงจากข้อมูลจริง ไม่พึ่งพาความรู้ทั่วไปของโมเดล.\n- ให้ความสำคัญกับการอ่านง่ายบนแพลตฟอร์มแชท เช่น Line และ Facebook เป็นอันดับแรก."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        -2060,
+        -900
+      ],
+      "id": "afe0b2f3-345e-4349-9f5f-3c56e5428403",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -2120,
+        -680
+      ],
+      "id": "916b662c-a352-4fa3-b2bd-acc754955bcd",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "hfltTNHSXh76Mzit",
+          "name": "Prima OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('review1').item.json.userId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1960,
+        -680
+      ],
+      "id": "59321c2b-934d-4737-b932-c3d94e5bb5ea",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.review_text = item.json.review_text.replace(/\\[|\\]/g, '');\n}\n\nreturn $input.all();"
+      },
+      "id": "1b7c697d-79de-4adb-921e-b0bd938cc0cb",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1300,
+        -900
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "60243729-e0e4-44d0-81ed-76856bbba6b0",
+              "name": "replyTokent",
+              "value": "={{ $('review1').item.json.replyTokent }}",
+              "type": "string"
+            },
+            {
+              "id": "cfc20797-1f52-452a-89aa-7c7027a5d2a0",
+              "name": "userAgent",
+              "value": "={{ $('review1').item.json.userAgent }}",
+              "type": "string"
+            },
+            {
+              "id": "364d1480-2d7c-4412-aefe-f3395bdcb1db",
+              "name": "chatInput",
+              "value": "={{ $('review1').item.json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "22dfb749-246a-45df-8b17-4bb7b82ba299",
+              "name": "userId",
+              "value": "={{ $('review1').item.json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "43945da0-39d4-4992-b3fa-5511c8bd043c",
+              "name": "review_text",
+              "value": "={{ $json.output.review_text.split() }}",
+              "type": "string"
+            },
+            {
+              "id": "c7f9c45c-7aed-4eb1-897a-0593eddf66ac",
+              "name": "original_image_url",
+              "value": "={{ $json.output.original_image_url.replaceAll('&export=download', '') }}",
+              "type": "string"
+            },
+            {
+              "id": "1e79882f-745a-42e8-b777-baa00179d142",
+              "name": "preview_image_url",
+              "value": "={{ $json.output.preview_image_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ed2dbc13-ed16-4fc2-82ba-baee2d135e2e",
+      "name": "Edit Fields9",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1520,
+        -900
+      ]
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"review_text\": {\n      \"type\": \"string\",\n      \"description\": \"ข้อความสรุปรีวิวสั้นๆ\"\n    },\n    \"original_image_url\": {\n      \"type\": \"string\",\n      \"description\": \"ลิงก์ URL ของรูปภาพรีวิวขนาดเต็ม (webContentLink)\"\n    },\n    \"preview_image_url\": {\n      \"type\": \"string\",\n      \"description\": \"ลิงก์ URL ของรูปภาพรีวิวขนาดพรีวิว (thumbnailLink)\"\n    }\n  },\n  \"required\": [\"review_text\", \"original_image_url\", \"preview_image_url\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1800,
+        -680
+      ],
+      "id": "bb02e031-c4ad-4b12-97b2-9733111f6825",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"replyToken\":\"{{ $json.replyTokent }}\",\n    \"messages\":[\n        {\n            \"type\":\"text\",\n            \"text\":{{ $json.review_text }}\n        },\n        {\n            \"type\": \"image\",\n            \"originalContentUrl\": \"{{ $json.original_image_url }}\",\n            \"previewImageUrl\": \"{{ $json.original_image_url }}\"\n        }\n    ]\n} ",
+        "options": {}
+      },
+      "id": "466e34d0-e1ba-4e29-99b3-45c73b5f04d4",
+      "name": "LINE-RESPONSE1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1100,
+        -900
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aD3ETGHgLbXDS9Iy",
+          "name": "Line Boot-X"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "94bb0dfd-260b-4073-a176-340be328f7a3",
+              "name": "userId",
+              "value": "={{ $('chat_input').item.json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "973a4b3c-1970-4727-9e88-20b5595f8c53",
+              "name": "replyTokent",
+              "value": "={{ $('chat_input').item.json.replyTokent }}",
+              "type": "string"
+            },
+            {
+              "id": "db54a606-adc2-44e4-b19d-1623a717a798",
+              "name": "chatInput",
+              "value": "={{ $('chat_input').item.json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "71a92390-e7fc-4387-bcb5-2c5e5bc5a763",
+              "name": "userAgent",
+              "value": "={{ $('chat_input').item.json.userAgent }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2640,
+        -360
+      ],
+      "id": "5cad5c8f-896a-4aad-80d4-445387fcb959",
+      "name": "review1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "94bb0dfd-260b-4073-a176-340be328f7a3",
+              "name": "userId",
+              "value": "={{ $('chat_input').item.json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "973a4b3c-1970-4727-9e88-20b5595f8c53",
+              "name": "replyTokent",
+              "value": "={{ $('chat_input').item.json.replyTokent }}",
+              "type": "string"
+            },
+            {
+              "id": "db54a606-adc2-44e4-b19d-1623a717a798",
+              "name": "chatInput",
+              "value": "={{ $('chat_input').item.json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "71a92390-e7fc-4387-bcb5-2c5e5bc5a763",
+              "name": "userAgent",
+              "value": "={{ $('chat_input').item.json.userAgent }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2640,
+        -180
+      ],
+      "id": "c81b7dfa-1c2e-4a88-b6b1-7fffa6fe4884",
+      "name": "normal"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2d979815-07db-4008-9eba-5794d1415370",
+              "leftValue": "={{ $json.operate }}",
+              "rightValue": "agent",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -5080,
+        -280
+      ],
+      "id": "06e306e9-d9c3-44e8-98c8-1cbfd986f97b",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "content": "##  AI แชท รีวิว",
+        "height": 100
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2060,
+        -1020
+      ],
+      "typeVersion": 1,
+      "id": "bcd956cf-2098-4dd8-b01c-883d43e0c995",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## AI ตรวจสอบสถานะถูกค้า",
+        "height": 100
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        20,
+        -340
+      ],
+      "typeVersion": 1,
+      "id": "587fd145-2ba6-4593-b3b7-90b7eed70beb",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "chat_input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "chat_input": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "chat_filter_line",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "chat_filter_line": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "chat_filter_facebook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "caht_from_face": {
+      "main": [
+        [
+          {
+            "node": "chat_input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Get Profile Line",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Profile Facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Verify User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Add Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "text-embeddings-3-large1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Doc",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "text-embeddings-3-large3": {
+      "ai_embedding": [
+        [
+          {
+            "node": "FAQ",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FAQ": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Doc": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "text-embeddings-3-large4": {
+      "ai_embedding": [
+        [
+          {
+            "node": "product",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "product": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "LINE-LOADING",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Typing Facebook Graph API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Typing Facebook Graph API1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "LINE-RESPONSE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Response Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Update Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "LINE-GROUP-Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LINE-LOADING": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LINE-RESPONSE": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Chat": {
+      "main": [
+        [
+          {
+            "node": "Logs Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Users": {
+      "main": [
+        [
+          {
+            "node": "caht_from_face",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify User": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Profile Line": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Profile Facebook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "chat_filter_facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "text-embeddings-3-large": {
+      "ai_embedding": [
+        [
+          {
+            "node": "review",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "review": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "review1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "normal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields9": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "review1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "normal": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "LINE-RESPONSE1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e1714a9b-483e-40e2-86ab-2d4556d24f1a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6f5dcd4ffe573318f7e66827ae7890c40da58a2bf57a9295e74d2423fda39691"
+  },
+  "id": "Gf0w70vuDxlCrX3e",
+  "tags": []
+}
