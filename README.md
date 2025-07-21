@@ -8,6 +8,7 @@ RAG Qdrant
 API OpenAI
 Google Drive
 Google Sheet
+Caht_History Supabase 
 ```
 
 ## Function
